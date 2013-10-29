@@ -22,7 +22,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     $this->cmd = array_shift($argv);
-    $this->argv = $argv;
+    $this->argv = $argv ?: array();
 
     if ($test = $this->parse($params)) {
       $this->values = $test['in'];
@@ -147,6 +147,15 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   public function __unset($key)
   {
     unset($this->params[$key]);
+  }
+
+  public function __isset($key)
+  {
+    if (is_numeric($key)) {
+      return isset($this->values[(int) $key]);
+    } else {
+      return isset($this->params[$key]);
+    }
   }
 
   public function __set($key, $value)
