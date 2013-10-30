@@ -12,17 +12,28 @@ describe('Clipper:', function () {
         'bar' => array('', 'candy'),
       ));
 
+      unset($params['bar']);
+      expect(isset($params['bar']))->toBeFalsy();
+
+      $params['bar'] = 'does nothing';
+
       expect($params['x'])->toBeNull();
-      expect($params['bar'])->toBe('does');
+      expect($params['bar'])->toBe('does nothing');
       expect($params['foo'])->toBe(array('bar', 'FU!'));
     });
 
     it('should handle the rest as values', function ($params) {
       $params->parse();
 
+      unset($params[1]);
+      expect(isset($params[1]))->toBeFalsy();
+
+      $params[1] = 'overwrite';
+
       expect($params[2])->toBe('c');
       expect($params[-1])->toBeNull();
       expect(sizeof($params))->toBe(4);
+      expect($params[1])->toBe('overwrite');
 
       $count = 0;
 
@@ -42,6 +53,10 @@ describe('Clipper:', function () {
       expect(function () use($params) {
         $params->parse(array('first' => array('a', 'thing', Params::PARAM_REQUIRED)));
       })->toThrow();
+
+      expect(function () use($params) {
+        $params->parse(array('ultimate' => array('z', 'candy', Params::PARAM_MULTIPLE)));
+      })->toThrow();
     });
 
     it('should return the command caller', function ($params) {
@@ -53,6 +68,13 @@ describe('Clipper:', function () {
 
       expect($params->args())->toBe(array('example' => 'FU!'));
       expect($params->values())->toBe(array('m', 'n', 'c', 'baz'));
+    });
+
+    it('should use $argv by default', function () {
+      $test = new Params();
+      $argv =$_SERVER['argv'];
+
+      expect($test->caller())->toBe(array_shift($argv));
     });
   });
 });

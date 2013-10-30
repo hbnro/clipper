@@ -161,7 +161,11 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
   public function __unset($key)
   {
-    unset($this->params[$key]);
+    if (is_numeric($key)) {
+      unset($this->input[(int) $key]);
+    } else {
+      unset($this->params[$key]);
+    }
   }
 
   public function __isset($key)
