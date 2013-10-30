@@ -24,7 +24,7 @@ class Colors
                     );
 
   private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)([^<>]+?)(\s*)<\/\\1>/';
-  private $strip_regex = "/<[cubh]:[^<>]+>|\033\[.*?m|<\/[cubh]>/";
+  private $strip_regex = "/<[cubh]:[^<>]+>|\033\[[\d;]*m|<\/[cubh]>/";
 
   public function __construct()
   {
