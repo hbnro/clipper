@@ -7,7 +7,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   private $cmd;
   private $argv;
 
-  private $values = array();
+  private $input = array();
   private $params = array();
 
   const PARAM_NO_VALUE = 1;
@@ -24,6 +24,16 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $this->argv = $argv ?: array();
   }
 
+  public function args()
+  {
+    return $this->params;
+  }
+
+  public function values()
+  {
+    return $this->input;
+  }
+
   public function caller()
   {
     return $this->cmd;
@@ -33,7 +43,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   {
     $test = $this->prepare($params);
 
-    $this->values = $test['in'];
+    $this->input = $test['in'];
     $this->params = $test['args'];
   }
 
@@ -121,12 +131,12 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
   public function count()
   {
-    return sizeof($this->values);
+    return sizeof($this->input);
   }
 
   public function getIterator()
   {
-    return new \ArrayIterator($this->values);
+    return new \ArrayIterator($this->input);
   }
 
   public function offsetSet($offset, $value)
@@ -157,7 +167,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   public function __isset($key)
   {
     if (is_numeric($key)) {
-      return isset($this->values[(int) $key]);
+      return isset($this->input[(int) $key]);
     } else {
       return isset($this->params[$key]);
     }
@@ -166,7 +176,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   public function __set($key, $value)
   {
     if (is_numeric($key)) {
-      $this->values[(int) $key] = $value;
+      $this->input[(int) $key] = $value;
     } else {
       $this->params[$key] = $value;
     }
@@ -175,7 +185,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   public function __get($key)
   {
     if (is_numeric($key)) {
-      return isset($this->values[(int) $key]) ? $this->values[(int) $key] : null;
+      return isset($this->input[(int) $key]) ? $this->input[(int) $key] : null;
     } else {
       return isset($this->params[$key]) ? $this->params[$key] : null;
     }

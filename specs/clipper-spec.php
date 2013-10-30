@@ -47,5 +47,12 @@ describe('Clipper:', function () {
     it('should return the command caller', function ($params) {
       expect($params->caller())->toBe('a/b');
     });
+
+    it('should return the rest of values', function ($params) {
+      $params->parse(array('example' => array('f', 'fuu')));
+
+      expect($params->args())->toBe(array('example' => 'FU!'));
+      expect($params->values())->toBe(array('m', 'n', 'c', 'baz'));
+    });
   });
 });
