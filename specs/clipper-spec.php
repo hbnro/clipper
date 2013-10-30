@@ -4,21 +4,21 @@ use \Clipper\Params;
 
 describe('Clipper:', function () {
   describe('Parsing arguments:', function () {
-    local('argv', explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing'));
+    local('params', new Params(explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing')));
 
-    it('should handle named parameters', function ($argv) {
-      $params = new Params(array(
+    it('should handle named parameters', function ($params) {
+      $params->parse(array(
         'foo' => array('f', 'foo', Params::PARAM_MULTIPLE),
         'bar' => array('', 'candy'),
-      ), $argv);
+      ));
 
       expect($params['x'])->toBeNull();
       expect($params['bar'])->toBe('does');
       expect($params['foo'])->toBe(array('bar', 'FU!'));
     });
 
-    it('should handle the rest as values', function ($argv) {
-      $params = new Params(array(), $argv);
+    it('should handle the rest as values', function ($params) {
+      $params->parse();
 
       expect($params[2])->toBe('c');
       expect($params[-1])->toBeNull();
@@ -34,19 +34,17 @@ describe('Clipper:', function () {
       expect($count)->toBe(4);
     });
 
-    it('should validate the received parameters', function ($argv) {
-      expect(function () use($argv) {
-        new Params(array('last' => array('z', 'some', Params::PARAM_NO_VALUE)), $argv);
+    it('should validate the received parameters', function ($params) {
+      expect(function () use($params) {
+        $params->parse(array('last' => array('z', 'some', Params::PARAM_NO_VALUE)));
       })->toThrow();
 
-      expect(function () use($argv) {
-        new Params(array('first' => array('a', 'thing', Params::PARAM_REQUIRED)), $argv);
+      expect(function () use($params) {
+        $params->parse(array('first' => array('a', 'thing', Params::PARAM_REQUIRED)));
       })->toThrow();
     });
 
-    it('should return the command caller', function ($argv) {
-      $params = new Params(array(), $argv);
-
+    it('should return the command caller', function ($params) {
       expect($params->caller())->toBe('a/b');
     });
   });

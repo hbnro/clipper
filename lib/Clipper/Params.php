@@ -14,19 +14,14 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   const PARAM_REQUIRED = 2;
   const PARAM_MULTIPLE = 4;
 
-  public function __construct(array $params, array $argv = array())
+  public function __construct(array $argv = array())
   {
-    if (func_num_args() === 1) {
+    if (!func_num_args()) {
       $argv = !empty($_SERVER['argv']) ? $_SERVER['argv'] : array();
     }
 
     $this->cmd = array_shift($argv);
     $this->argv = $argv ?: array();
-
-    if ($test = $this->parse($params)) {
-      $this->values = $test['in'];
-      $this->params = $test['args'];
-    }
   }
 
   public function caller()
@@ -34,7 +29,15 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     return $this->cmd;
   }
 
-  private function parse(array $args)
+  public function parse(array $params = array())
+  {
+    $test = $this->prepare($params);
+
+    $this->values = $test['in'];
+    $this->params = $test['args'];
+  }
+
+  private function prepare(array $args)
   {
     $out = array(
       'in' => array(),
