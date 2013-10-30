@@ -14,7 +14,6 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   const PARAM_REQUIRED = 2;
   const PARAM_MULTIPLE = 4;
 
-
   public function __construct(array $params, array $argv = array())
   {
     if (func_num_args() === 1) {
@@ -29,7 +28,6 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
       $this->params = $test['args'];
     }
   }
-
 
   private function parse(array $args)
   {
@@ -112,7 +110,6 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
     return $out;
   }
-
 
   public function count()
   {
