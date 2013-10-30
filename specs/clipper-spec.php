@@ -43,5 +43,11 @@ describe('Clipper:', function () {
         new Params(array('first' => array('a', 'thing', Params::PARAM_REQUIRED)), $argv);
       })->toThrow();
     });
+
+    it('should return the command caller', function ($argv) {
+      $params = new Params(array(), $argv);
+
+      expect($params->caller())->toBe('a/b');
+    });
   });
 });
