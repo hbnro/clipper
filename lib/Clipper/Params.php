@@ -29,6 +29,11 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     }
   }
 
+  public function caller()
+  {
+    return $this->cmd;
+  }
+
   private function parse(array $args)
   {
     $out = array(
