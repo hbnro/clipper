@@ -46,15 +46,15 @@ describe('Clipper:', function () {
     });
 
     it('should validate the received parameters', function ($params) {
-      expect(function () use($params) {
+      expect(function () use ($params) {
         $params->parse(array('last' => array('z', 'some', Params::PARAM_NO_VALUE)));
       })->toThrow();
 
-      expect(function () use($params) {
+      expect(function () use ($params) {
         $params->parse(array('first' => array('a', 'thing', Params::PARAM_REQUIRED)));
       })->toThrow();
 
-      expect(function () use($params) {
+      expect(function () use ($params) {
         $params->parse(array('ultimate' => array('z', 'candy', Params::PARAM_MULTIPLE)));
       })->toThrow();
     });
