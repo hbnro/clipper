@@ -46,9 +46,9 @@ class Shell
         }
 
         $this->write($len = strlen("$text..."));
-        $this->back($len);
+        $this->clear($len);
 
-        pause(1);
+        sleep(1);
       }
     } else {
       $this->writeln($text);
@@ -110,7 +110,7 @@ class Shell
   {
     if ($num) {
       $this->write(str_repeat("\x08", $num));
-    } elseif ($this->is_atty()) {
+    } elseif ($this->colors->is_atty()) {
       $this->write("\033[H\033[2J");
     } else {
       $c = $this->height;
@@ -142,24 +142,28 @@ class Shell
 
   public function menu(array $set, $default = '', $title = 'Choose one', $warn = 'Unknown option')
   {
+    $out = "\n";
     $old = array_values($set);
     $pad = strlen(sizeof($set)) + 2;
 
     foreach ($old as $i => $val) {
       $test = array_search($val, $set) == $default ? ' [*]' : '';
 
-      $this->write("\n", str_pad($i + 1, $pad, ' ', STR_PAD_LEFT), '. ', $val, $test);
-    } while (1) {
-      $val = $this->readln("\n", $title, ': ');
+      $out .= join('', array(str_pad($i + 1, $pad, ' ', STR_PAD_LEFT), '. ', $val, $test, "\n"));
+    }
 
-      if (!is_numeric($val)) {
+    while (1) {
+      $this->write("$out\n");
+      $val = $this->readln($title, ': ');
+
+      if (!$val) {
         return $default;
-      } else {
-        if (isset($old[$val -= 1])) {
-          return array_search($old[$val], $set);
-        } elseif ($val < 0 OR $val >= sizeof($old)) {
-          return $this->error($warn);
-        }
+      } elseif (!is_numeric($val)) {
+        $this->error($warn);
+      } elseif (isset($old[$val -= 1])) {
+        return array_search($old[$val], $set);
+      } elseif ($val < 0 || $val >= sizeof($old)) {
+        $this->error($warn);
       }
     }
   }
@@ -224,7 +228,7 @@ class Shell
       $args = $key . (!empty($val['args']) ? ' <' . join('> <', $val['args']) . '>' : '');
       $flag = !empty($val['flag']) ? "-$val[flag]  " : '';
 
-      $this->write(sprintf("\n  %-{$max}s %s%s", $args, $flag, $val['title']));
+      $this->write(sprintf("\n  %-{$max}s %s%s", $args, $flag, $val['desc']));
     }
 
     $this->flush(1);
