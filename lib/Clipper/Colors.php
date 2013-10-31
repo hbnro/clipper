@@ -39,7 +39,7 @@ class Colors
 
     while (preg_match_all($this->fmt_regex, $text, $match)) {
       foreach ($match[0] as $i => $val) {
-        @list($fg, $bg) = explode(',', $match[2][$i], 2); // fg,bg
+        @list($fg, $bg) = explode(',', $match[2][$i], 2);
 
         $out  = array();
 
