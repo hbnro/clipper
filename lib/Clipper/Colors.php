@@ -42,21 +42,16 @@ class Colors
         @list($fg, $bg) = explode(',', $match[2][$i], 2); // fg,bg
 
         $out  = array();
-        $out []= $this->fgcolors[$fg];
 
-        if (strstr($match[1][$i], 'b')) {
-          $out []= 1;
+        if ($fg && !empty($this->fgcolors[$fg])) {
+          $out []= $this->fgcolors[$fg];
         }
 
-        if (strstr($match[1][$i], 'u')) {
-          $out []= 4;
-        }
+        strstr($match[1][$i], 'b') && $out []= 1;
+        strstr($match[1][$i], 'u') && $out []= 4;
+        strstr($match[1][$i], 'h') && $out []= 7;
 
-        if (strstr($match[1][$i], 'h')) {
-          $out []= 7;
-        }
-
-        if ($bg) {
+        if ($bg && !empty($this->bgcolors[$bg])) {
           $out []= $this->bgcolors[$bg];
         }
 
