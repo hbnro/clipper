@@ -244,8 +244,8 @@ class Shell
       $left = ceil($current / $total * $length);
       $right = $length - $left;
 
-      $line .= $this->sprintf('<c:cyan,cyan>%s</c>', str_repeat(' ', $left));
-      $line .= $this->sprintf('<c:light_gray,light_gray>%s</c>', str_repeat(' ', $right));
+      $line .= $this->sprintf('<c:cyan,cyan>%s</c>', str_repeat('|', $left));
+      $line .= $this->sprintf('<c:light_gray,light_gray>%s</c>', str_repeat('-', $right));
 
       $this->write(sprintf('%s %3d%%%s', $line, $perc, $finish ? "\n" : ''));
     }
