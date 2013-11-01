@@ -1,6 +1,6 @@
 <?php
 
-use \Clipper\Params;
+use \Habanero\Clipper\Params;
 
 describe('Clipper:', function () {
   describe('Parsing arguments:', function () {

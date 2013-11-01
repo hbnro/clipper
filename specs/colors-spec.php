@@ -1,6 +1,6 @@
 <?php
 
-use \Clipper\Colors;
+use \Habanero\Clipper\Colors;
 
 describe('Clipper:', function () {
   describe('Parsing colors:', function () {

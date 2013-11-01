@@ -1,6 +1,6 @@
 <?php
 
-namespace Clipper;
+namespace Habanero\Clipper;
 
 class Colors
 {

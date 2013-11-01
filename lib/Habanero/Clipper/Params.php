@@ -1,6 +1,6 @@
 <?php
 
-namespace Clipper;
+namespace Habanero\Clipper;
 
 class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 {
