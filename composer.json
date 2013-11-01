@@ -14,7 +14,7 @@
     "habanero/spectre": "dev-master"
   },
   "autoload": {
-    "psr-0": { "Clipper": "lib/" }
+    "psr-0": { "Habanero\\Clipper\\": "lib" }
   },
   "minimum-stability": "dev"
 }
