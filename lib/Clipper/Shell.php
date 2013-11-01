@@ -108,7 +108,7 @@ class Shell
 
   public function clear($num = 0)
   {
-    if ($num) {
+    if ($num > 0) {
       $this->write(str_repeat("\x08", $num));
     } elseif ($this->colors->is_atty()) {
       $this->write("\033[H\033[2J");
