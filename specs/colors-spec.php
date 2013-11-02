@@ -1,10 +1,8 @@
 <?php
 
-use \Habanero\Clipper\Colors;
-
 describe('Clipper:', function () {
   describe('Parsing colors:', function () {
-    local('colors', new Colors());
+    let('colors', new \Clipper\Colors());
 
     it('should handle basic colouring', function ($colors) {
       $code = 'Hey <c:red>bro</c>!';

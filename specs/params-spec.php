@@ -1,14 +1,12 @@
 <?php
 
-use \Habanero\Clipper\Params;
-
 describe('Clipper:', function () {
   describe('Parsing arguments:', function () {
-    local('params', new Params(explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing')));
+    let('params', new \Clipper\Params(explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing')));
 
     it('should handle named parameters', function ($params) {
       $params->parse(array(
-        'foo' => array('f', 'foo', Params::PARAM_MULTIPLE),
+        'foo' => array('f', 'foo', \Clipper\Params::PARAM_MULTIPLE),
         'bar' => array('', 'candy'),
       ));
 
@@ -47,15 +45,15 @@ describe('Clipper:', function () {
 
     it('should validate the received parameters', function ($params) {
       expect(function () use ($params) {
-        $params->parse(array('last' => array('z', 'some', Params::PARAM_NO_VALUE)));
+        $params->parse(array('last' => array('z', 'some', \Clipper\Params::PARAM_NO_VALUE)));
       })->toThrow();
 
       expect(function () use ($params) {
-        $params->parse(array('first' => array('a', 'thing', Params::PARAM_REQUIRED)));
+        $params->parse(array('first' => array('a', 'thing', \Clipper\Params::PARAM_REQUIRED)));
       })->toThrow();
 
       expect(function () use ($params) {
-        $params->parse(array('ultimate' => array('z', 'candy', Params::PARAM_MULTIPLE)));
+        $params->parse(array('ultimate' => array('z', 'candy', \Clipper\Params::PARAM_MULTIPLE)));
       })->toThrow();
     });
 
@@ -71,7 +69,7 @@ describe('Clipper:', function () {
     });
 
     it('should use $argv by default', function () {
-      $test = new Params();
+      $test = new \Clipper\Params();
       $argv =$_SERVER['argv'];
 
       expect($test->caller())->toBe(array_shift($argv));
