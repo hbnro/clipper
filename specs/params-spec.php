@@ -2,12 +2,13 @@
 
 describe('Clipper:', function () {
   describe('Parsing arguments:', function () {
-    let('params', new \Clipper\Params(explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing')));
+    let('params', new \Clipper\Params(explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing --no-thing')));
 
     it('should handle named parameters', function ($params) {
       $params->parse(array(
         'foo' => array('f', 'foo', \Clipper\Params::PARAM_MULTIPLE),
         'bar' => array('', 'candy'),
+        'fu-bar' => array('', 'thing'),
       ));
 
       unset($params['bar']);
@@ -18,6 +19,29 @@ describe('Clipper:', function () {
       expect($params['x'])->toBeNull();
       expect($params['bar'])->toBe('does nothing');
       expect($params['foo'])->toBe(array('bar', 'FU!'));
+
+      $params->noBody = true;
+      $params->noThingElse = false;
+
+      expect(isset($params->thingElse))->toBeTruthy();
+      expect($params->thingElse)->toBeTruthy();
+
+      expect(isset($params->body))->toBeTruthy();
+      expect($params->body)->toBeFalsy();
+
+      expect($params->noBaz)->toBeNull();
+      expect($params->baz)->toBeNull();
+
+      expect(isset($params->noBaz))->toBeFalsy();
+      expect(isset($params->baz))->toBeFalsy();
+
+      expect(isset($params->fuBar))->toBeTruthy();
+      expect($params['fu-bar'])->toBeFalsy();
+      expect($params->fuBar)->toBeFalsy();
+
+      expect(isset($params->noFuBar))->toBeTruthy();
+      expect($params['no-fu-bar'])->toBeTruthy();
+      expect($params->noFuBar)->toBeTruthy();
     });
 
     it('should handle the rest as values', function ($params) {
@@ -70,7 +94,7 @@ describe('Clipper:', function () {
 
     it('should use $argv by default', function () {
       $test = new \Clipper\Params();
-      $argv =$_SERVER['argv'];
+      $argv = $_SERVER['argv'];
 
       expect($test->caller())->toBe(array_shift($argv));
     });

@@ -60,11 +60,14 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     for (; $offset < $count; $offset += 1) {
       $arg = $this->argv[$offset];
 
-      if (preg_match('/^(?:--(\w+)(?:=(\S+))?|-([a-zA-Z])(\S+)?)$/', $arg, $match)) {
+      if (preg_match('/^(?:--([-\w]+)(?:=(\S+))?|-([a-zA-Z])(\S+)?)$/', $arg, $match)) {
         $next = !empty($this->argv[$offset + 1]) ? $this->argv[$offset + 1] : null;
         $key = !empty($match[3]) ? $match[3] : $match[1];
 
-        if ((null === $next) || (substr($next, 0, 1) === '-')) {
+        if (substr($key, 0, 3) === 'no-') {
+          $key = substr($key, 3);
+          $value = false;
+        } elseif ((null === $next) || (substr($next, 0, 1) === '-')) {
           $value = !empty($match[4]) ? $match[4] : (!empty($match[2]) ? $match[2] : null);
           $value = null === $value ? true : (strlen($value) ? $value : true);
         } elseif (!empty($match[4])) {
@@ -129,6 +132,13 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     return $out;
   }
 
+  private function dashes($key)
+  {
+    return strtolower(preg_replace_callback('/[A-Z]/', function ($match) {
+      return '-' . strtolower($match[0]);
+    }, $key));
+  }
+
   public function count()
   {
     return sizeof($this->input);
@@ -163,24 +173,30 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   {
     if (is_numeric($key)) {
       unset($this->input[(int) $key]);
-    } else {
-      unset($this->params[$key]);
     }
+
+    unset($this->params[preg_replace('/^no-/', '', $this->dashes($key))]);
   }
 
   public function __isset($key)
   {
     if (is_numeric($key)) {
       return isset($this->input[(int) $key]);
-    } else {
-      return isset($this->params[$key]);
     }
+
+    return isset($this->params[preg_replace('/^no-/', '', $this->dashes($key))]);
   }
 
   public function __set($key, $value)
   {
     if (is_numeric($key)) {
       $this->input[(int) $key] = $value;
+    }
+
+    $key = $this->dashes($key);
+
+    if (substr($key, 0, 3) === 'no-') {
+      $this->params[substr($key, 3)] = !$value;
     } else {
       $this->params[$key] = $value;
     }
@@ -190,6 +206,12 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   {
     if (is_numeric($key)) {
       return isset($this->input[(int) $key]) ? $this->input[(int) $key] : null;
+    }
+
+    $key = $this->dashes($key);
+
+    if (substr($key, 0, 3) === 'no-') {
+      return isset($this->params[substr($key, 3)]) ? !$this->params[substr($key, 3)] : null;
     } else {
       return isset($this->params[$key]) ? $this->params[$key] : null;
     }
