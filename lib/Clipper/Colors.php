@@ -23,7 +23,7 @@ class Colors
                       'light_cyan' => '1;36', 'white' => '1;37',
                     );
 
-  private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)([^<>]+?)(\s*)<\/\\1>/';
+  private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)(.+?)(\s*)<\/\\1>/';
   private $strip_regex = "/<[cubh]:[^<>]+>|\033\[[\d;]*m|<\/[cubh]>/";
 
   public function __construct()
