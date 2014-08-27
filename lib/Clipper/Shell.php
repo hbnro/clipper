@@ -25,10 +25,11 @@ class Shell
   public function main(\Closure $callback)
   {
     $this->loop = 0;
+    $this->start = time();
 
     do {
       $this->loop++;
-      $callback($this, $this->loop);
+      $callback($this, $this->loop, time() - $this->start);
     } while ($this->loop);
   }
 
