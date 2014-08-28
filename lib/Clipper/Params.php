@@ -8,7 +8,8 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   private $argv;
 
   private $input = array();
-  private $params = array();
+  private $flags = array();
+  private $helps = array();
 
   const PARAM_NO_VALUE = 1;
   const PARAM_REQUIRED = 2;
@@ -26,7 +27,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
   public function args()
   {
-    return $this->params;
+    return $this->flags;
   }
 
   public function values()
@@ -43,8 +44,29 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   {
     $test = $this->prepare($params);
 
+    $this->helps = $params;
     $this->input = $test['in'];
-    $this->params = $test['args'];
+    $this->flags = $test['args'];
+  }
+
+  public function usage()
+  {
+    $out = array();
+    $max = array_map(function ($param) {
+      return strlen(!empty($param[1]) ? $param[1] : 0) + strlen($param[0]) + 4;
+    }, $this->helps);
+
+    sort($max);
+
+    $max = array_pop($max);
+
+    foreach ($this->helps as $name => $params) {
+      @list($short, $long, $opt, $h) = $params;
+
+      $out []= '  ' . str_pad("-$short --$long", $max) . '  ' . ($h ? $h : $name);
+    }
+
+    return join("\n", $out);
   }
 
   private function prepare(array $args)
@@ -102,6 +124,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   private function params($key, array $field, array $args)
   {
     $out = array();
+    $key = $this->dashes($key);
 
     @list($short, $long, $opt) = $field;
 
@@ -175,7 +198,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
       unset($this->input[(int) $key]);
     }
 
-    unset($this->params[preg_replace('/^no-/', '', $this->dashes($key))]);
+    unset($this->flags[preg_replace('/^no-/', '', $this->dashes($key))]);
   }
 
   public function __isset($key)
@@ -184,7 +207,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
       return isset($this->input[(int) $key]);
     }
 
-    return isset($this->params[preg_replace('/^no-/', '', $this->dashes($key))]);
+    return isset($this->flags[preg_replace('/^no-/', '', $this->dashes($key))]);
   }
 
   public function __set($key, $value)
@@ -196,9 +219,9 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $key = $this->dashes($key);
 
     if (substr($key, 0, 3) === 'no-') {
-      $this->params[substr($key, 3)] = !$value;
+      $this->flags[substr($key, 3)] = !$value;
     } else {
-      $this->params[$key] = $value;
+      $this->flags[$key] = $value;
     }
   }
 
@@ -211,9 +234,9 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $key = $this->dashes($key);
 
     if (substr($key, 0, 3) === 'no-') {
-      return isset($this->params[substr($key, 3)]) ? !$this->params[substr($key, 3)] : null;
+      return isset($this->flags[substr($key, 3)]) ? !$this->flags[substr($key, 3)] : null;
     } else {
-      return isset($this->params[$key]) ? $this->params[$key] : null;
+      return isset($this->flags[$key]) ? $this->flags[$key] : null;
     }
   }
 }
