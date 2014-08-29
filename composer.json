@@ -11,12 +11,11 @@
     "php": ">=5.3.4"
   },
   "require-dev": {
-    "habanero/spectre": "dev-master"
+    "habanero/spectre": "v0.1.0"
   },
   "autoload": {
-    "psr-0": {
-      "Clipper": "lib/"
+    "psr-4": {
+      "": "lib/"
     }
-  },
-  "minimum-stability": "dev"
+  }
 }
