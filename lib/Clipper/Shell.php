@@ -18,8 +18,16 @@ class Shell
     $this->params = new Params($argv);
     $this->colors = new Colors();
 
-    $this->width = max(getenv('COLUMNS'), @exec('tput cols'), $this->width);
-    $this->height = max(getenv('ROWS'), @exec('tput lines'), $this->height);
+    $cols = 0;
+    $lines = 0;
+
+    if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
+      $cols = @exec('tput cols');
+      $lines = @exec('tput lines');
+    }
+
+    $this->width = max(getenv('COLUMNS'), $cols, $this->width);
+    $this->height = max(getenv('ROWS'), $lines, $this->height);
   }
 
   public function main(\Closure $callback)
