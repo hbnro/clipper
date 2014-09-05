@@ -1,6 +1,6 @@
 {
   "name": "habanero/clipper",
-  "description": "Simple CLI tools",
+  "description": "Simple CLI tools for PHP",
   "license": "MIT",
   "authors": [
     {
