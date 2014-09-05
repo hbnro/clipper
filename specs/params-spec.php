@@ -1,102 +1,119 @@
 <?php
 
-describe('Clipper:', function () {
-  describe('Parsing arguments:', function () {
-    let('params', new \Clipper\Params(explode(' ', 'a/b m n -xYZ c -z -a --foo bar baz --candy=does -f FU! -z nothing --no-thing')));
+describe('Parsing argvs:', function () {
+  $params = new \Clipper\Params(array(
+    'vendor/bin/cmd',
+    '-w',
+    'a',
+    '-yo',
+    '-xyz',
+    '--make=off',
+    '-s1024',
+    'raw value',
+    'and',
+    'a',
+    '--a',
+    'mixed value',
+    '--option=value',
+    '-ccc',
+    '-d13',
+    '-d20',
+    '-mmn15',
+    '--',
+    '-this',
+    '--will',
+    'not get parsed',
+  ));
 
-    it('should handle named parameters', function ($params) {
-      $params->parse(array(
-        'foo' => array('f', 'foo', \Clipper\Params::PARAM_MULTIPLE),
-        'bar' => array('', 'candy'),
-        'fu-bar' => array('', 'thing'),
-      ));
+  $params->parse(array(
+    'boolean_value' => array('w', '', \Clipper\Params::PARAM_NO_VALUE),
+    'mixed_value' => array('x', '', \Clipper\Params::PARAM_NO_VALUE),
+    'arr_value' => array('y', '', \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_ARRAY),
+    'do_make' => array('k', 'make', \Clipper\Params::AS_BOOLEAN),
+    'number_value' => array('s', '', \Clipper\Params::AS_NUMBER),
+    'acc_value' => array('c', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_NUMBER),
+    'sum_value' => array('d', '', \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_NUMBER),
+    'multi_num' => array('m', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_NUMBER),
+    'single_num' => array('n', '', \Clipper\Params::AS_NUMBER),
+  ));
 
-      unset($params['bar']);
-      expect(isset($params['bar']))->toBeFalsy();
+  let('params', $params);
 
-      $params['bar'] = 'does nothing';
+  it('should parse nothing after --', function ($params) {
+    expect($params->getRaw())->toBe(array('-this', '--will', 'not get parsed'));
+  });
 
-      expect($params['x'])->toBeNull();
-      expect($params['bar'])->toBe('does nothing');
-      expect($params['foo'])->toBe(array('bar', 'FU!'));
+  it('should parse non-flags as strings', function ($params) {
+    expect($params->getArray())->toBe(array('a', 'raw value', 'and', 'a', 'mixed value'));
+  });
 
-      $params->noBody = true;
-      $params->noThingElse = false;
+  it('should parse --option=value as string', function ($params) {
+    expect($params->option)->toBe('value');
+  });
 
-      expect(isset($params->thingElse))->toBeTruthy();
-      expect($params->thingElse)->toBeTruthy();
+  it('should parse --make "off" as boolean', function ($params) {
+    expect($params->do_make)->toBeBoolean();
+  });
 
-      expect(isset($params->body))->toBeTruthy();
-      expect($params->body)->toBeFalsy();
+  it('should parse --a "mixed value" as string', function ($params) {
+    expect($params->a)->toBe('mixed value');
+  });
 
-      expect($params->noBaz)->toBeNull();
-      expect($params->baz)->toBeNull();
+  it('should parse -s1024 as integer', function ($params) {
+    expect($params->number_value)->toBeInteger();
+  });
 
-      expect(isset($params->noBaz))->toBeFalsy();
-      expect(isset($params->baz))->toBeFalsy();
+  it('should parse -ccc as integer', function ($params) {
+    expect($params->acc_value)->toBe(3);
+  });
 
-      expect(isset($params->fuBar))->toBeTruthy();
-      expect($params['fu-bar'])->toBeFalsy();
-      expect($params->fuBar)->toBeFalsy();
+  it('should parse -w as boolean', function ($params) {
+    expect($params->boolean_value)->toBe(true);
+  });
 
-      expect(isset($params->noFuBar))->toBeTruthy();
-      expect($params['no-fu-bar'])->toBeTruthy();
-      expect($params->noFuBar)->toBeTruthy();
+  describe('parsing -d13 -d20', function () {
+    it('should parse both values as integer', function ($params) {
+      expect($params->sum_value)->toBe(33);
+    });
+  });
+
+  describe('parsing -mmn15', function () {
+    it('should parse -mm as integer', function ($params) {
+      expect($params->multi_num)->toBe(2);
     });
 
-    it('should handle the rest as values', function ($params) {
-      $params->parse();
+    it('should parse -n15 as integer', function ($params) {
+      expect($params->single_num)->toBe(15);
+    });
+  });
 
-      unset($params[1]);
-      expect(isset($params[1]))->toBeFalsy();
-
-      $params[1] = 'overwrite';
-
-      expect($params[2])->toBe('c');
-      expect($params[-1])->toBeNull();
-      expect(sizeof($params))->toBe(4);
-      expect($params[1])->toBe('overwrite');
-
-      $count = 0;
-
-      foreach ($params as $i => $value) {
-        expect($params[$i])->toBe($value);
-        $count++;
-      }
-
-      expect($count)->toBe(4);
+  describe('parsing -yo -xyz', function () {
+    it('should parse -x as boolean', function ($params) {
+      expect($params->mixed_value)->toBe(true);
     });
 
-    it('should validate the received parameters', function ($params) {
-      expect(function () use ($params) {
-        $params->parse(array('last' => array('z', 'some', \Clipper\Params::PARAM_NO_VALUE)));
-      })->toThrow();
+    it('should parse -yo -yz as array', function ($params) {
+      expect($params->arr_value)->toBe(array('o', 'z'));
+    });
+  });
 
-      expect(function () use ($params) {
-        $params->parse(array('first' => array('a', 'thing', \Clipper\Params::PARAM_REQUIRED)));
-      })->toThrow();
+  describe('About params', function () {
+    it('should return an array for arguments', function ($params) {
+      expect($params->getArray())
+        ->toBeArray()
+        ->toContain('mixed value')
+        ->not->toHaveKey('mixed_value');
 
-      expect(function () use ($params) {
-        $params->parse(array('ultimate' => array('z', 'candy', \Clipper\Params::PARAM_MULTIPLE)));
-      })->toThrow();
+      expect($params[0])->toBe('a');
     });
 
-    it('should return the command caller', function ($params) {
-      expect($params->caller())->toBe('a/b');
-    });
+    it('should return an object for params', function ($params) {
+      expect($params->getObject())
+        ->toBeObject()
+        ->toContain('mixed value')
+        ->toHaveKey('mixed_value');
 
-    it('should return the rest of values', function ($params) {
-      $params->parse(array('example' => array('f', 'fuu')));
-
-      expect($params->args())->toBe(array('example' => 'FU!'));
-      expect($params->values())->toBe(array('m', 'n', 'c', 'baz'));
-    });
-
-    it('should use $argv by default', function () {
-      $test = new \Clipper\Params();
-      $argv = $_SERVER['argv'];
-
-      expect($test->caller())->toBe(array_shift($argv));
+      expect($params->mixed_value)->toBe(true);
     });
   });
 });

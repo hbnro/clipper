@@ -7,13 +7,21 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   private $cmd;
   private $argv;
 
-  private $input = array();
-  private $flags = array();
-  private $helps = array();
+  private $_;
+  private $raw;
+  private $flags;
+  private $params;
+
+  private $falsy = array('-1', '0', 'no', 'off', 'false');
+  private $truthy = array('1', 'ok', 'yes', 'on', 'true');
 
   const PARAM_NO_VALUE = 1;
   const PARAM_REQUIRED = 2;
   const PARAM_MULTIPLE = 4;
+
+  const AS_ARRAY = 32;
+  const AS_NUMBER = 64;
+  const AS_BOOLEAN = 128;
 
   public function __construct(array $argv = array())
   {
@@ -25,218 +33,238 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $this->argv = $argv ?: array();
   }
 
-  public function args()
-  {
-    return $this->flags;
-  }
-
-  public function values()
-  {
-    return $this->input;
-  }
-
-  public function caller()
+  public function getCommand()
   {
     return $this->cmd;
   }
 
-  public function parse(array $params = array())
+  public function getObject()
   {
-    $test = $this->prepare($params);
+    $out = new \stdClass();
 
-    $this->helps = $params;
-    $this->input = $test['in'];
-    $this->flags = $test['args'];
+    foreach ($this->flags as $key => $val) {
+      $out->$key = $this->cast($val);
+    }
+
+    return $out;
   }
 
-  public function usage()
+  public function getArray()
+  {
+    return $this->_;
+  }
+
+  public function getRaw()
+  {
+    return $this->raw;
+  }
+
+  public function usage($indent = 0)
   {
     $out = array();
     $max = array_map(function ($param) {
-      return strlen(!empty($param[1]) ? $param[1] : 0) + strlen($param[0]) + 4;
-    }, $this->helps);
+      return strlen($param[0]) + strlen($param[1]);
+    }, $this->params);
 
     sort($max);
 
-    $max = array_pop($max);
+    $length = array_pop($max) + 5;
+    $indent = is_numeric($indent) ? str_repeat(' ', $indent) : $indent;
 
-    foreach ($this->helps as $name => $params) {
-      @list($short, $long, $opt, $h) = $params;
+    foreach ($this->params as $name => $param) {
+      $long = !empty($param[1]) ? "--{$param[1]}" : '';
+      $short = !empty($param[0]) ? "-{$param[0]}" : '';
+      $usage = !empty($param[3]) ? "  {$param[3]}" : "  $name";
+      $hints = !empty($param[2]) ? '  ' . $this->hint($param[2]) : '';
 
-      $out []= '  ' . str_pad("-$short --$long", $max) . '  ' . ($h ? $h : $name);
+      $out []= $indent . str_pad(join(', ', array_filter(array($short, $long))), $length) . $usage . $hints;
     }
 
     return join("\n", $out);
   }
 
-  private function prepare(array $args)
+  public function parse(array $params)
   {
-    $out = array(
-      'in' => array(),
-      'args' => array(),
-    );
+    $args = $this->argv;
 
-    $count = sizeof($this->argv);
-    $offset = 0;
+    $this->_ = array();
+    $this->raw = array();
+    $this->flags = array();
+    $this->params = $params;
 
-    for (; $offset < $count; $offset += 1) {
-      $arg = $this->argv[$offset];
-
-      if (preg_match('/^(?:--([-\w]+)(?:=(\S+))?|-([a-zA-Z])(\S+)?)$/', $arg, $match)) {
-        $next = !empty($this->argv[$offset + 1]) ? $this->argv[$offset + 1] : null;
-        $key = !empty($match[3]) ? $match[3] : $match[1];
-
-        if (substr($key, 0, 3) === 'no-') {
-          $key = substr($key, 3);
-          $value = false;
-        } elseif ((null === $next) || (substr($next, 0, 1) === '-')) {
-          $value = !empty($match[4]) ? $match[4] : (!empty($match[2]) ? $match[2] : null);
-          $value = null === $value ? true : (strlen($value) ? $value : true);
-        } elseif (!empty($match[4])) {
-          $value = $match[4];
-        } else {
-          $value = $next;
-          $offset++;
-        }
-
-        $out['args'] []= array($key => $value);
-      } else {
-        $out['in'] []= $arg;
-      }
+    if ($raw_key = array_search('--', $args)) {
+      $this->raw = array_slice($args, $raw_key + 1);
+      $args = array_slice($args, 0, $raw_key);
     }
 
-    $out['args'] = $this->validate($args, $out['args']);
+    for ($offset = 0; $offset < sizeof($args); $offset += 1) {
+      $left = $this->parts($args[$offset]);
+      $right = $this->parts(isset($args[$offset + 1]) ? $args[$offset + 1] : null);
 
-    return $out;
-  }
-
-  private function validate(array $raw, array $args = array())
-  {
-    $out = array();
-
-    foreach ($raw as $key => $val) {
-      $out += $this->params($key, $val, $args);
-    }
-
-    return $out;
-  }
-
-  private function params($key, array $field, array $args)
-  {
-    $out = array();
-    $key = $this->dashes($key);
-
-    @list($short, $long, $opt) = $field;
-
-    foreach ($args as $one) {
-      $sub = key($one);
-      $val = $one[$sub];
-
-      if (($sub === $short) || ($sub === $long)) {
-        if ((self::PARAM_REQUIRED & $opt) && (!strlen($val) || (true === $val))) {
-          throw new \Exception("Missing required value for parameter '$sub'");
-        } elseif ((self::PARAM_NO_VALUE & $opt) && (true !== $val)) {
-          throw new \Exception("Unexpected value '$val' for parameter '$sub'");
+      if ($left['key']) {
+        if ((self::PARAM_MULTIPLE & $left['opts']) && !isset($this->flags[$left['key']])) {
+          $this->flags[$left['key']] = array_merge($left, array(
+            'value' => array(),
+          ));
         }
 
-        if (self::PARAM_MULTIPLE & $opt) {
-          if ((true === $val) || (null === $val)) {
-            throw new \Exception("Missing value for parameter '$sub'");
+        if ($left['value']) {
+          if (self::PARAM_NO_VALUE & $left['opts']) {
+            if (self::PARAM_MULTIPLE & $left['opts']) {
+              $this->flags[$left['key']]['value'] []= 1;
+            } else {
+              $this->flags[$left['key']] = true;
+            }
+
+            $args []= '-' . $left['value'];
+          } elseif (self::PARAM_MULTIPLE & $left['opts']) {
+            $this->flags[$left['key']]['value'] []= $this->cast($left);
           } else {
-            isset($out[$key]) || $out[$key] = array();
-            $out[$key] []= $val;
+            $this->flags[$left['key']] = $left;
+          }
+        } else if ($right['value'] && !$right['key']) {
+          if (self::PARAM_NO_VALUE & $left['opts']) {
+            $this->flags[$left['key']] = true;
+            $this->_ []= $right['value'];
+
+            $offset += 1;
+          } else {
+            $this->flags[$left['key']] = $right;
           }
         } else {
-          $out[$key] = $val;
+          if (self::PARAM_MULTIPLE & $left['opts']) {
+            $this->flags[$left['key']]['value'] []= 1;
+          } else {
+            $this->flags[$left['key']] = $left;
+          }
         }
+      } elseif ($left['value']) {
+        $this->_ []= $left['value'];
+      }
+    }
+  }
+
+  private function cast($param)
+  {
+    if (!is_array($param)) {
+      return $param;
+    }
+
+    if (is_array($param['value'])) {
+      if (self::AS_NUMBER & $param['opts']) {
+        return array_sum($param['value']);
+      } elseif (self::AS_ARRAY & $param['opts']) {
+        return $param['value'];
+      }
+
+      return join('', $param['value']);
+    }
+
+    if (self::AS_BOOLEAN & $param['opts']) {
+      if (in_array($param['value'], $this->falsy)) {
+        return false;
+      }
+
+      if (in_array($param['value'], $this->truthy)) {
+        return true;
+      }
+
+      throw new \Exception("Must be a valid boolean-value: {$param['value']}");
+    }
+
+    if (self::AS_NUMBER & $param['opts']) {
+      return (int) $param['value'];
+    }
+
+    return !(self::PARAM_NO_VALUE & $param['opts']) ? $param['value'] : true;
+  }
+
+  private function hint($opts)
+  {
+  }
+
+  private function prop($params)
+  {
+    $name = $params['long'] ?: $params['short'];
+    $param = array();
+
+    foreach ($this->params as $key => $value) {
+      if (($params['long'] === $value[1]) || ($params['short'] === $value[0])) {
+        $param = $value;
+        $name = $key;
+        break;
       }
     }
 
-    return $out;
+    return array_merge($params, array(
+      'key' => $name,
+      'opts' => !empty($param[2]) ? $param[2] : null,
+      'usage' => !empty($param[3]) ? $param[3] : null,
+    ));
   }
 
-  private function dashes($key)
+  private function parts($arg)
   {
-    return strtolower(preg_replace_callback('/[A-Z]/', function ($match) {
-      return '-' . strtolower($match[0]);
-    }, $key));
+    preg_match('/^(?:--([-\w]+)(?:=(\S+))?|-(\w)(.+?|)|(.+?))$/', $arg, $matches);
+
+    $long_flag = !empty($matches[1]) ? $matches[1] : null;
+    $short_flag = !empty($matches[3]) ? $matches[3] : null;
+    $inline_value = !empty($matches[4]) ? $matches[4] : (!empty($matches[2]) ? $matches[2] : (!empty($matches[5]) ? $matches[5] : null));
+
+    return $this->prop(array(
+      'long' => $long_flag,
+      'short' => $short_flag,
+      'value' => $inline_value,
+    ));
   }
 
   public function count()
   {
-    return sizeof($this->input);
+    return sizeof($this->_);
   }
 
   public function getIterator()
   {
-    return new \ArrayIterator($this->input);
+    return new \ArrayIterator($this->_);
   }
 
   public function offsetSet($offset, $value)
   {
-    $this->$offset = $value;
+    $this->_[$offset] = $value;
   }
 
   public function offsetExists($offset)
   {
-    return isset($this->$offset);
+    return isset($this->_[$offset]);
   }
 
   public function offsetUnset($offset)
   {
-    unset($this->$offset);
+    unset($this->_[$offset]);
   }
 
   public function offsetGet($offset)
   {
-    return $this->$offset;
+    return $this->_[$offset];
   }
 
   public function __unset($key)
   {
-    if (is_numeric($key)) {
-      unset($this->input[(int) $key]);
-    }
-
-    unset($this->flags[preg_replace('/^no-/', '', $this->dashes($key))]);
+    unset($this->flags[$key]);
   }
 
   public function __isset($key)
   {
-    if (is_numeric($key)) {
-      return isset($this->input[(int) $key]);
-    }
-
-    return isset($this->flags[preg_replace('/^no-/', '', $this->dashes($key))]);
+    return isset($this->flags[$key]);
   }
 
   public function __set($key, $value)
   {
-    if (is_numeric($key)) {
-      $this->input[(int) $key] = $value;
-    }
-
-    $key = $this->dashes($key);
-
-    if (substr($key, 0, 3) === 'no-') {
-      $this->flags[substr($key, 3)] = !$value;
-    } else {
-      $this->flags[$key] = $value;
-    }
+    $this->flags[$key] = $value;
   }
 
   public function __get($key)
   {
-    if (is_numeric($key)) {
-      return isset($this->input[(int) $key]) ? $this->input[(int) $key] : null;
-    }
-
-    $key = $this->dashes($key);
-
-    if (substr($key, 0, 3) === 'no-') {
-      return isset($this->flags[substr($key, 3)]) ? !$this->flags[substr($key, 3)] : null;
-    } else {
-      return isset($this->flags[$key]) ? $this->flags[$key] : null;
-    }
+    return isset($this->flags[$key]) ? $this->cast($this->flags[$key]) : null;
   }
 }
