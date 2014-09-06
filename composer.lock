@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a5f5ffb450a1b8b15273d071596580f",
+    "hash": "d8850712a1ea30a1e1e1ed9491450d11",
     "packages": [
 
     ],
@@ -15,16 +15,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pateketrueke/spectre.git",
-                "reference": "a61de729624362af1383d15afb5d30f45b25195a"
+                "reference": "c7163f8b84cfa4d352a7c1e511e0a26c3c504f6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pateketrueke/spectre/zipball/a61de729624362af1383d15afb5d30f45b25195a",
-                "reference": "a61de729624362af1383d15afb5d30f45b25195a",
+                "url": "https://api.github.com/repos/pateketrueke/spectre/zipball/c7163f8b84cfa4d352a7c1e511e0a26c3c504f6f",
+                "reference": "c7163f8b84cfa4d352a7c1e511e0a26c3c504f6f",
                 "shasum": ""
             },
             "require": {
-                "habanero/clipper": ">=0.1.0",
+                "habanero/clipper": "dev-master",
                 "php": ">=5.3.4",
                 "phpunit/php-code-coverage": ">=2.0.10"
             },
@@ -51,7 +51,7 @@
                 }
             ],
             "description": "Simple spec-testing tools",
-            "time": "2014-09-05 22:28:31"
+            "time": "2014-09-06 14:52:36"
         },
         {
             "name": "phpunit/php-code-coverage",
