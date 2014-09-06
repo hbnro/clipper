@@ -40,7 +40,7 @@ describe('Parsing argvs:', function () {
   let('params', $params);
 
   it('should parse nothing after --', function ($params) {
-    expect($params->getRaw())->toBe(array('-this', '--will', 'not get parsed'));
+    expect($params->getTail())->toBe(array('-this', '--will', 'not get parsed'));
   });
 
   it('should parse non-flags as strings', function ($params) {
