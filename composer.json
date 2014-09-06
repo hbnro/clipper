@@ -11,7 +11,7 @@
     "php": ">=5.3.4"
   },
   "require-dev": {
-    "habanero/spectre": "v0.1.0"
+    "habanero/spectre": "dev-master#a61de729624362af1383d15afb5d30f45b25195a"
   },
   "autoload": {
     "psr-4": {

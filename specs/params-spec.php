@@ -97,7 +97,7 @@ describe('Parsing argvs:', function () {
     });
   });
 
-  describe('About params', function () {
+  describe('About params:', function () {
     it('should return an array for arguments', function ($params) {
       expect($params->getArray())
         ->toBeArray()

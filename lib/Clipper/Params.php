@@ -33,6 +33,12 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $this->argv = $argv ?: array();
   }
 
+  // deprecated
+  public function values()
+  {
+    return $this->getArray();
+  }
+
   public function getCommand()
   {
     return $this->cmd;
@@ -245,6 +251,11 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
   public function offsetGet($offset)
   {
+    // deprecated
+    if (!is_numeric($offset)) {
+      return isset($this->flags[$offset]) ? $this->cast($this->flags[$offset]) : null;
+    }
+
     return $this->_[$offset];
   }
 
