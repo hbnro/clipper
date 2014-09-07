@@ -88,7 +88,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $this->flags = array();
     $this->params = $params;
 
-    if ($raw_key = array_search('--', $args)) {
+    if (false !== ($raw_key = array_search('--', $args))) {
       $this->raw = array_slice($args, $raw_key + 1);
       $args = array_slice($args, 0, $raw_key);
     }
