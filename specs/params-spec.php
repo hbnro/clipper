@@ -16,6 +16,7 @@ describe('Parsing argvs:', function () {
     'mixed value',
     'mixed value',
     '--option=value',
+    '--no-force',
     '-ccc',
     '-d13',
     '-d20',
@@ -131,6 +132,11 @@ describe('Parsing argvs:', function () {
           'empty_value' => array('', 'make', \Clipper\Params::PARAM_NO_VALUE),
         ), true);
       })->toThrow();
+    });
+
+    it('should negate some params', function ($params) {
+      expect($params->force)->toBe(false);
+      expect($params->getObject())->not->toHaveKey('no-force');
     });
 
     it('should provide usage info', function ($params) {

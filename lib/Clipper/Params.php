@@ -104,7 +104,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
           ));
         }
 
-        if ($left['value']) {
+        if (null !== $left['value']) {
           $value = $this->cast($left);
 
           if (self::PARAM_NO_VALUE & $left['opts']) {
@@ -113,7 +113,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
           } else {
             $this->add($left, $value);
           }
-        } else if ($right['value'] && !$right['key']) {
+        } else if ((null !== $right['value']) && !$right['key']) {
           if (self::PARAM_NO_VALUE & $left['opts']) {
             $this->_ []= $right['value'];
             $this->add($left);
@@ -157,9 +157,9 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   private function add($param, $value = null)
   {
     if (self::PARAM_MULTIPLE & $param['opts']) {
-      $this->flags[$param['key']]['value'] []= ($value ?: 1);
+      $this->flags[$param['key']]['value'] []= (null !== $value ? $value : 1);
     } else {
-      $this->flags[$param['key']] = ($value ?: true);
+      $this->flags[$param['key']] = (null !== $value ? $value : true);
     }
   }
 
@@ -243,6 +243,11 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     $long_flag = !empty($matches[1]) ? $matches[1] : null;
     $short_flag = !empty($matches[3]) ? $matches[3] : null;
     $inline_value = !empty($matches[4]) ? $matches[4] : (!empty($matches[2]) ? $matches[2] : (!empty($matches[5]) ? $matches[5] : null));
+
+    if ('no-' === substr($long_flag, 0, 3)) {
+      $long_flag = substr($long_flag, 3);
+      $inline_value = false;
+    }
 
     return $this->prop(array(
       'long' => $long_flag,
