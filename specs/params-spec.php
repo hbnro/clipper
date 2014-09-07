@@ -14,6 +14,7 @@ describe('Parsing argvs:', function () {
     'a',
     '--a',
     'mixed value',
+    'mixed value',
     '--option=value',
     '-ccc',
     '-d13',

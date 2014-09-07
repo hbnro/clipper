@@ -120,6 +120,10 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
             $offset += 1;
           } else {
             $this->add($left, $this->cast($right));
+
+            if ($left['long']) {
+              $offset += 1;
+            }
           }
         } else {
           $this->add($left);
