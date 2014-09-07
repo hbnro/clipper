@@ -217,32 +217,6 @@ class Shell
     $this->writeln("\n", "$left$test");
   }
 
-  public function help($title, array $set = array())
-  {
-    $this->write("\n$title");
-
-    $max = 0;
-
-    foreach ($set as $one => $val) {
-      $cur = !empty($val['args']) ? strlen(join('> <', $val['args'])) : 0;
-
-      if (($cur += strlen($one)) > $max) {
-        $max = $cur;
-      }
-    }
-
-    $max += 4;
-
-    foreach ($set as $key => $val) {
-      $args = $key . (!empty($val['args']) ? ' <' . join('> <', $val['args']) . '>' : '');
-      $flag = !empty($val['flag']) ? "-$val[flag]  " : '';
-
-      $this->write(sprintf("\n  %-{$max}s %s%s", $args, $flag, $val['desc']));
-    }
-
-    $this->flush(1);
-  }
-
   public function progress($current, $total = 100, $title = '')
   {
     $perc = str_pad(min(100, round(($current / $total) * 100) + 1), 4, ' ', STR_PAD_LEFT);
