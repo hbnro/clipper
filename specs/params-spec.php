@@ -131,5 +131,23 @@ describe('Parsing argvs:', function () {
         ), true);
       })->toThrow();
     });
+
+    it('should provide usage info', function ($params) {
+      $params->parse(array(
+        'README' => array('h', 'help', null, 'Show this help'),
+        'inputFile' => array('f', 'file', \Clipper\Params::PARAM_REQUIRED, null, 'string'),
+        'outputFile' => array('o', 'output', \Clipper\Params::PARAM_REQUIRED, null, 'string'),
+        'tempDirectory' => array('', 'dir', \Clipper\Params::PARAM_NO_VALUE),
+        'filterGlobPattern' => array('', 'glob', null, 'Glob pattern to filter input', 'string'),
+      ));
+
+      expect($params->usage())->toBe(join("\n", array(
+        '-h, --help    Show this help',
+        '-f, --file    inputFile  [required]',
+        '-o, --output  outputFile  [required]',
+        '    --dir     tempDirectory  [no-value]',
+        '    --glob    Glob pattern to filter input',
+      )));
+    });
   });
 });

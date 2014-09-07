@@ -69,11 +69,11 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
     foreach ($this->params as $name => $param) {
       $long = !empty($param[1]) ? "--{$param[1]}" : '';
-      $short = !empty($param[0]) ? "-{$param[0]}" : '';
+      $short = !empty($param[0]) ? "-{$param[0]}, " : '    ';
       $usage = !empty($param[3]) ? "  {$param[3]}" : "  $name";
-      $hints = !empty($param[2]) ? '  ' . $this->hint($param[2]) : '';
+      $hints = !empty($param[2]) ? '  [' . $this->hint($param[2]) . ']' : '';
 
-      $out []= $indent . str_pad(join(', ', array_filter(array($short, $long))), $length) . $usage . $hints;
+      $out []= $indent . str_pad($short . $long, $length) . $usage . $hints;
     }
 
     return join("\n", $out);
@@ -194,6 +194,21 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
   private function hint($opts)
   {
+    $out = array();
+
+    if (self::PARAM_REQUIRED & $opts) {
+      $out []= 'required';
+    }
+
+    if (self::PARAM_NO_VALUE & $opts) {
+      $out []= 'no-value';
+    }
+
+    if (self::PARAM_MULTIPLE & $opts) {
+      $out []= 'multiple';
+    }
+
+    return join(', ', $out);
   }
 
   private function prop($params)
@@ -211,7 +226,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
     return array_merge($params, array(
       'key' => $name,
-      'type' => !empty($param[4]) ? $param[4] : 'string',
+      'type' => !empty($param[4]) ? $param[4] : null,
       'opts' => !empty($param[2]) ? $param[2] : null,
       'usage' => !empty($param[3]) ? $param[3] : null,
     ));
