@@ -105,11 +105,13 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         if ($left['value']) {
+          $value = $this->cast($left);
+
           if (self::PARAM_NO_VALUE & $left['opts']) {
-            $this->add($left);
-            $args []= '-' . $left['value'];
+            $this->add($left, $left['short'] ? null : $value);
+            array_splice($args, $offset--, 1, '-' . $left['value']);
           } else {
-            $this->add($left, $this->cast($left));
+            $this->add($left, $value);
           }
         } else if ($right['value'] && !$right['key']) {
           if (self::PARAM_NO_VALUE & $left['opts']) {
@@ -134,7 +136,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         $value = $this->$key;
 
         if ($exists) {
-          if ((self::PARAM_NO_VALUE & $opts) && (true !== $value) && !empty($value)) {
+          if ((self::PARAM_NO_VALUE & $opts) && (true !== $value) && strlen($value)) {
             throw new \Exception("Unexpected value '$value' for parameter '$key'");
           }
 

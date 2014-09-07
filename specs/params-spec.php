@@ -123,5 +123,13 @@ describe('Parsing argvs:', function () {
         ), true);
       })->toThrow();
     });
+
+    it('should validate empty params', function () {
+      expect(function ($params) {
+        $params->parse(array(
+          'empty_value' => array('', 'make', \Clipper\Params::PARAM_NO_VALUE),
+        ), true);
+      })->toThrow();
+    });
   });
 });
