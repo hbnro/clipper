@@ -1,2 +1,6 @@
+*.log
+*~
+.c9
+.DS_Store
 vendor
 coverage
