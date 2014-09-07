@@ -4,29 +4,29 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d8850712a1ea30a1e1e1ed9491450d11",
+    "hash": "6eca11f085ec7427289ae6ab1de73f5a",
     "packages": [
 
     ],
     "packages-dev": [
         {
             "name": "habanero/spectre",
-            "version": "dev-master",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pateketrueke/spectre.git",
-                "reference": "c7163f8b84cfa4d352a7c1e511e0a26c3c504f6f"
+                "reference": "fbc3e0c6afacf77df8c6ea464ec3a2037fa691a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pateketrueke/spectre/zipball/c7163f8b84cfa4d352a7c1e511e0a26c3c504f6f",
-                "reference": "c7163f8b84cfa4d352a7c1e511e0a26c3c504f6f",
+                "url": "https://api.github.com/repos/pateketrueke/spectre/zipball/fbc3e0c6afacf77df8c6ea464ec3a2037fa691a3",
+                "reference": "fbc3e0c6afacf77df8c6ea464ec3a2037fa691a3",
                 "shasum": ""
             },
             "require": {
-                "habanero/clipper": "dev-master",
+                "habanero/clipper": "dev-master#0175c7f56088777569ae1ff9d3cd5c86abda12fb",
                 "php": ">=5.3.4",
-                "phpunit/php-code-coverage": ">=2.0.10"
+                "phpunit/php-code-coverage": "~2.0.10"
             },
             "bin": [
                 "bin/spectre"
@@ -51,7 +51,7 @@
                 }
             ],
             "description": "Simple spec-testing tools",
-            "time": "2014-09-06 14:52:36"
+            "time": "2014-09-06 15:16:45"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -347,9 +347,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "habanero/spectre": 20
-    },
+    "stability-flags": [
+
+    ],
     "prefer-stable": false,
     "platform": {
         "php": ">=5.3.4"
