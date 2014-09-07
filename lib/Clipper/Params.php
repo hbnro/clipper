@@ -79,7 +79,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     return join("\n", $out);
   }
 
-  public function parse(array $params)
+  public function parse(array $params, $validate = false)
   {
     $args = $this->argv;
 
@@ -124,6 +124,26 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         }
       } elseif ($left['value']) {
         $this->_ []= $left['value'];
+      }
+    }
+
+    if ($validate) {
+      foreach ($this->params as $key => $param) {
+        $opts = !empty($param[2]) ? $param[2] : null;
+        $exists = isset($this->flags[$key]);
+        $value = $this->$key;
+
+        if ($exists) {
+          if ((self::PARAM_NO_VALUE & $opts) && (true !== $value) && !empty($value)) {
+            throw new \Exception("Unexpected value '$value' for parameter '$key'");
+          }
+
+          if ((is_array($value) && !sizeof($value)) || !strlen($value)) {
+            throw new \Exception("Missing value for parameter '$key'");
+          }
+        } elseif (self::PARAM_REQUIRED & $opts) {
+          throw new \Exception("Missing required parameter '$key'");
+        }
       }
     }
   }

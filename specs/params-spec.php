@@ -115,5 +115,13 @@ describe('Parsing argvs:', function () {
 
       expect($params->mixed_value)->toBe(true);
     });
+
+    it('should validate missing params', function () {
+      expect(function ($params) {
+        $params->parse(array(
+          'some_value' => array('P', '', \Clipper\Params::PARAM_REQUIRED),
+        ), true);
+      })->toThrow();
+    });
   });
 });
