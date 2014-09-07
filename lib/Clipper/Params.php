@@ -110,37 +110,36 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
         if ($left['value']) {
           if (self::PARAM_NO_VALUE & $left['opts']) {
-            if (self::PARAM_MULTIPLE & $left['opts']) {
-              $this->flags[$left['key']]['value'] []= 1;
-            } else {
-              $this->flags[$left['key']] = true;
-            }
-
+            $this->add($left);
             $args []= '-' . $left['value'];
           } elseif (self::PARAM_MULTIPLE & $left['opts']) {
             $this->flags[$left['key']]['value'] []= $this->cast($left);
           } else {
-            $this->flags[$left['key']] = $left;
+            $this->flags[$left['key']] = $this->cast($left);
           }
         } else if ($right['value'] && !$right['key']) {
           if (self::PARAM_NO_VALUE & $left['opts']) {
-            $this->flags[$left['key']] = true;
             $this->_ []= $right['value'];
-
+            $this->add($left);
             $offset += 1;
           } else {
-            $this->flags[$left['key']] = $right;
+            $this->add($left, $this->cast($right));
           }
         } else {
-          if (self::PARAM_MULTIPLE & $left['opts']) {
-            $this->flags[$left['key']]['value'] []= 1;
-          } else {
-            $this->flags[$left['key']] = $left;
-          }
+          $this->add($left);
         }
       } elseif ($left['value']) {
         $this->_ []= $left['value'];
       }
+    }
+  }
+
+  private function add($param, $value = null)
+  {
+    if (self::PARAM_MULTIPLE & $param['opts']) {
+      $this->flags[$param['key']]['value'] []= ($value ?: 1);
+    } else {
+      $this->flags[$param['key']] = ($value ?: true);
     }
   }
 
@@ -176,7 +175,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
       return (int) $param['value'];
     }
 
-    return !(self::PARAM_NO_VALUE & $param['opts']) ? $param['value'] : true;
+    return $param['value'];
   }
 
   private function hint($opts)
