@@ -136,12 +136,12 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         $value = $this->$key;
 
         if ($exists) {
-          if ((self::PARAM_NO_VALUE & $opts) && (true !== $value) && strlen($value)) {
+          if ((self::PARAM_NO_VALUE & $opts) && !is_bool($value) && strlen($value)) {
             throw new \Exception("Unexpected value '$value' for parameter '$key'");
           }
 
           if ((is_array($value) && !sizeof($value)) || !strlen($value)) {
-            throw new \Exception("Missing value for parameter '$key'");
+            throw new \Exception("Missing value(s) for parameter '$key'");
           }
         } elseif (self::PARAM_REQUIRED & $opts) {
           throw new \Exception("Missing required parameter '$key'");
