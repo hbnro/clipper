@@ -19,10 +19,6 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
   const PARAM_REQUIRED = 2;
   const PARAM_MULTIPLE = 4;
 
-  const AS_ARRAY = 32;
-  const AS_NUMBER = 64;
-  const AS_BOOLEAN = 128;
-
   public function __construct(array $argv = array())
   {
     if (!func_num_args()) {
@@ -112,10 +108,8 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
           if (self::PARAM_NO_VALUE & $left['opts']) {
             $this->add($left);
             $args []= '-' . $left['value'];
-          } elseif (self::PARAM_MULTIPLE & $left['opts']) {
-            $this->flags[$left['key']]['value'] []= $this->cast($left);
           } else {
-            $this->flags[$left['key']] = $this->cast($left);
+            $this->add($left, $this->cast($left));
           }
         } else if ($right['value'] && !$right['key']) {
           if (self::PARAM_NO_VALUE & $left['opts']) {
@@ -150,16 +144,16 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     if (is_array($param['value'])) {
-      if (self::AS_NUMBER & $param['opts']) {
+      if ('number' == $param['type']) {
         return array_sum($param['value']);
-      } elseif (self::AS_ARRAY & $param['opts']) {
+      } elseif ('array' == $param['type']) {
         return $param['value'];
       }
 
       return join('', $param['value']);
     }
 
-    if (self::AS_BOOLEAN & $param['opts']) {
+    if ('boolean' == $param['type']) {
       if (in_array($param['value'], $this->falsy)) {
         return false;
       }
@@ -167,11 +161,9 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
       if (in_array($param['value'], $this->truthy)) {
         return true;
       }
-
-      throw new \Exception("Must be a valid boolean-value: {$param['value']}");
     }
 
-    if (self::AS_NUMBER & $param['opts']) {
+    if ('number' == $param['type']) {
       return (int) $param['value'];
     }
 
@@ -197,6 +189,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
     return array_merge($params, array(
       'key' => $name,
+      'type' => !empty($param[4]) ? $param[4] : 'string',
       'opts' => !empty($param[2]) ? $param[2] : null,
       'usage' => !empty($param[3]) ? $param[3] : null,
     ));

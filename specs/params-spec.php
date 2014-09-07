@@ -28,13 +28,13 @@ describe('Parsing argvs:', function () {
   $params->parse(array(
     'boolean_value' => array('w', '', \Clipper\Params::PARAM_NO_VALUE),
     'mixed_value' => array('x', '', \Clipper\Params::PARAM_NO_VALUE),
-    'arr_value' => array('y', '', \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_ARRAY),
-    'do_make' => array('k', 'make', \Clipper\Params::AS_BOOLEAN),
-    'number_value' => array('s', '', \Clipper\Params::AS_NUMBER),
-    'acc_value' => array('c', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_NUMBER),
-    'sum_value' => array('d', '', \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_NUMBER),
-    'multi_num' => array('m', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE | \Clipper\Params::AS_NUMBER),
-    'single_num' => array('n', '', \Clipper\Params::AS_NUMBER),
+    'arr_value' => array('y', '', \Clipper\Params::PARAM_MULTIPLE, '', 'array'),
+    'do_make' => array('k', 'make', null, '', 'boolean'),
+    'number_value' => array('s', '', null, '', 'number'),
+    'acc_value' => array('c', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE, '', 'number'),
+    'sum_value' => array('d', '', \Clipper\Params::PARAM_MULTIPLE, '', 'number'),
+    'multi_num' => array('m', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE, '', 'number'),
+    'single_num' => array('n', '', null, '', 'number'),
   ));
 
   let('params', $params);
