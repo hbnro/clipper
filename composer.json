@@ -7,12 +7,14 @@
       "name": "Alvaro Cabrera"
     }
   ],
+  "version": "v0.2.1",
   "require": {
     "php": ">=5.3.4"
   },
   "require-dev": {
-    "habanero/spectre": "v0.2.0"
+    "habanero/spectre": "~0.2.0"
   },
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "": "lib/"

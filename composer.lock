@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6eca11f085ec7427289ae6ab1de73f5a",
+    "hash": "c070c1cf3a8a2162b27f66a1d478ebe7",
     "packages": [
 
     ],
@@ -15,16 +15,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pateketrueke/spectre.git",
-                "reference": "fbc3e0c6afacf77df8c6ea464ec3a2037fa691a3"
+                "reference": "1c358fccbcbdc67a6993ca488e1b2928142eb791"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pateketrueke/spectre/zipball/fbc3e0c6afacf77df8c6ea464ec3a2037fa691a3",
-                "reference": "fbc3e0c6afacf77df8c6ea464ec3a2037fa691a3",
+                "url": "https://api.github.com/repos/pateketrueke/spectre/zipball/1c358fccbcbdc67a6993ca488e1b2928142eb791",
+                "reference": "1c358fccbcbdc67a6993ca488e1b2928142eb791",
                 "shasum": ""
             },
             "require": {
-                "habanero/clipper": "dev-master#0175c7f56088777569ae1ff9d3cd5c86abda12fb",
+                "habanero/clipper": "~0.2.0",
                 "php": ">=5.3.4",
                 "phpunit/php-code-coverage": "~2.0.10"
             },
@@ -51,20 +51,20 @@
                 }
             ],
             "description": "Simple spec-testing tools",
-            "time": "2014-09-06 15:16:45"
+            "time": "2014-09-08 22:30:02"
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "2.0.11",
+            "version": "2.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "53603b3c995f5aab6b59c8e08c3a663d2cc810b7"
+                "reference": "62f8cd539ab2e2c25077aeb5f5ed3209acee3612"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/53603b3c995f5aab6b59c8e08c3a663d2cc810b7",
-                "reference": "53603b3c995f5aab6b59c8e08c3a663d2cc810b7",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/62f8cd539ab2e2c25077aeb5f5ed3209acee3612",
+                "reference": "62f8cd539ab2e2c25077aeb5f5ed3209acee3612",
                 "shasum": ""
             },
             "require": {
@@ -116,7 +116,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-08-31 06:33:04"
+            "time": "2014-09-01 22:04:15"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -209,7 +209,7 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.3.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
@@ -258,23 +258,23 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "79517609ec01139cd7e9fded0dd7ce08c952ef6a"
+                "reference": "10c7467da0622f7848cc5cadc0828c3359254df4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/79517609ec01139cd7e9fded0dd7ce08c952ef6a",
-                "reference": "79517609ec01139cd7e9fded0dd7ce08c952ef6a",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/10c7467da0622f7848cc5cadc0828c3359254df4",
+                "reference": "10c7467da0622f7848cc5cadc0828c3359254df4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.0.*@dev"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
@@ -305,7 +305,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2014-02-18 16:17:19"
+            "time": "2014-05-04 17:56:05"
         },
         {
             "name": "sebastian/version",
@@ -346,7 +346,7 @@
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [
 
     ],
