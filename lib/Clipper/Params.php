@@ -108,6 +108,10 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
           $value = $this->cast($left);
 
           if (self::PARAM_NO_VALUE & $left['opts']) {
+            if (null !== $left['value'] && $left['long'] && (self::PARAM_NO_VALUE & $left['opts'])) {
+              throw new \Exception("Unexpected value '{$left['value']}' for parameter '{$left['key']}'");
+            }
+
             $this->add($left, $left['short'] ? null : $value);
             array_splice($args, $offset--, 1, '-' . $left['value']);
           } else {
@@ -119,7 +123,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
             $this->add($left);
             $offset += 1;
           } else {
-            $this->add($left, $this->cast($right));
+            $this->add($left, $this->cast($right, $left['type']));
 
             if ($left['long']) {
               $offset += 1;
@@ -136,16 +140,31 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     if ($validate) {
       foreach ($this->params as $key => $param) {
         $opts = !empty($param[2]) ? $param[2] : null;
+        $type = !empty($param[4]) ? $param[4] : null;
+
+        $debug_msg = sprintf("Invalid value '%s' for parameter '$key' ($type expected)", trim(print_r($this->$key, 1)));
         $exists = isset($this->flags[$key]);
         $value = $this->$key;
 
         if ($exists) {
-          if ((self::PARAM_NO_VALUE & $opts) && !is_bool($value) && strlen($value)) {
-            throw new \Exception("Unexpected value '$value' for parameter '$key'");
-          }
+          switch ($type) {
+            case 'boolean';
+              if (!is_bool($value)) {
+                throw new \Exception($debug_msg);
+              }
+            break;
 
-          if ((is_array($value) && !sizeof($value)) || !strlen($value)) {
-            throw new \Exception("Missing value(s) for parameter '$key'");
+            case 'number';
+              if (!is_integer($value)) {
+                throw new \Exception($debug_msg);
+              }
+            break;
+
+            case 'array';
+              if (!is_array($value)) {
+                throw new \Exception($debug_msg);
+              }
+            break;
           }
         } elseif (self::PARAM_REQUIRED & $opts) {
           throw new \Exception("Missing required parameter '$key'");
@@ -163,10 +182,14 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     }
   }
 
-  private function cast($param)
+  private function cast($param, $type = null)
   {
     if (!is_array($param)) {
       return $param;
+    }
+
+    if ($type) {
+      $param['type'] = $type;
     }
 
     if (is_array($param['value'])) {

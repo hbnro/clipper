@@ -21,6 +21,11 @@ describe('Parsing argvs:', function () {
     '-d13',
     '-d20',
     '-mmn15',
+    '--unknown',
+    '1234',
+    '--value',
+    '--enabled',
+    'yes',
     '--',
     '-this',
     '--will',
@@ -132,6 +137,28 @@ describe('Parsing argvs:', function () {
           'empty_value' => array('', 'make', \Clipper\Params::PARAM_NO_VALUE),
         ), true);
       })->toThrow();
+    });
+
+    it('should validate typed params', function ($params) {
+      expect(function ($params) {
+        $params->parse(array(
+          'aNumber' => array('', 'unknown', null, '', 'number'),
+          'aList' => array('c', '', \Clipper\Params::PARAM_NO_VALUE | \Clipper\Params::PARAM_MULTIPLE, '', 'array'),
+          'aOpt' => array('', 'enabled', \Clipper\Params::PARAM_NO_VALUE, '', 'boolean'),
+        ), true);
+      })->not->toThrow();
+
+      expect($params->aNumber)
+        ->toBeInteger()
+        ->toBe(1234);
+
+      expect($params->aList)
+        ->toBeArray()
+        ->toBe(array(1, 1, 1));
+
+      expect($params->aOpt)
+        ->toBeBoolean()
+        ->toBe(true);
     });
 
     it('should negate some params', function ($params) {
