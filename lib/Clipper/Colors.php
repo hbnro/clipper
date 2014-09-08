@@ -25,9 +25,9 @@ class Colors
                       'light_cyan' => '1;36', 'white' => '1;37',
                     );
 
-  private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)(.+?)(\s*)<\/\\1>/';
-  private $strip_regex = "/<[cubh]:[^<>]+>|\033\[[\d;]*m|<\/[cubh]>/";
-  private $aliases_regex = '/<(\w+)>(.+?)<\/\\1>/';
+  private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)(.+?)(\s*)<\/\\1>/s';
+  private $strip_regex = "/<[cubh]:[^<>]+>|\033\[[\d;]*m|<\/[cubh]>/s";
+  private $aliases_regex = '/<(\w+)>(.+?)<\/\\1>/s';
 
   public function __construct()
   {
