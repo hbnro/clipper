@@ -6,6 +6,8 @@ class Colors
 {
   private $atty;
 
+  private $aliases = array();
+
   private $bgcolors = array(
                       'black' => 40, 'red' => 41,
                       'green' => 42, 'yellow' => 43,
@@ -25,10 +27,16 @@ class Colors
 
   private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)(.+?)(\s*)<\/\\1>/';
   private $strip_regex = "/<[cubh]:[^<>]+>|\033\[[\d;]*m|<\/[cubh]>/";
+  private $aliases_regex = '/<(\w+)>(.+?)<\/\\1>/';
 
   public function __construct()
   {
     $this->atty = (false !== getenv('ANSICON')) || (function_exists('posix_isatty') && @posix_isatty(STDOUT));
+  }
+
+  public function alias($name, $format)
+  {
+    $this->aliases[$name] = $format;
   }
 
   public function colorize($text, $format = null)
@@ -67,6 +75,19 @@ class Colors
     if (!$this->is_atty()) {
       return $this->strips($text);
     }
+
+    $aliases = $this->aliases;
+
+    $text = preg_replace_callback($this->aliases_regex, function ($matches) use ($aliases) {
+      if (!empty($aliases[$matches[1]])) {
+        $format = $aliases[$matches[1]];
+        $parts = explode(':', $format);
+
+        return "<$format>$matches[2]</$parts[0]>";
+      }
+
+      return $matches[2];
+    }, $text);
 
     while (preg_match_all($this->fmt_regex, $text, $match)) {
       foreach ($match[0] as $i => $val) {
