@@ -1,17 +1,34 @@
 <?php
 
+\Spectre\Base::customMatchers('toHasFormat', function ($expected, $format) {
+  return expect($expected)
+    ->toContain("\033[{$format}m")
+    ->toContain("\033[0m");
+});
+
 describe('Parsing colors:', function () {
   let('colors', new \Clipper\Colors());
 
-  it('should handle basic colouring', function ($colors) {
-    $code = 'Hey <c:red>bro</c>!';
-    $test = $colors->format($code);
+  it('should handle basic color formatting', function ($colors) {
+    expect($colors->format('Hey <c:red>bro</c>!'))->toHasFormat('31');
+  });
 
-    expect($test)->toBe("Hey \033[31mbro\033[0m!");
-    expect($colors->strips($test))->toBe('Hey bro!');
-    expect($colors->strips($code))->toBe('Hey bro!');
+  it('should handle highlighted text', function ($colors) {
+    expect($colors->format('This <bh:white>text</bh> is that?'))->toHasFormat('1;37;1;7');
+  });
 
-    expect($colors->format('This <bh:white>text</bh> is that?'))->toBe("This \033[1;37;1;7mtext\033[0m is that?");
-    expect($colors->format('This <uc:green,black>text</uc> is that?'))->toBe("This \033[32;4;40mtext\033[0m is that?");
+  it('should handle underlined text', function ($colors) {
+    expect($colors->format('<uc:green,black>green-text</uc> black-bkg'))->toHasFormat('32;4;40');
+  });
+
+  it('should handle bold text', function ($colors) {
+    expect($colors->format('THE <bc:red>RED</bc> TEXT'))->toHasFormat('31;1');
+  });
+
+  it('should handle aliases', function ($colors) {
+    $colors->alias('warning', 'c:yellow,red');
+
+    expect($colors->format('<warning>ERROR</warning>'))->toHasFormat('1;33;41');
+    expect($colors->format('<unknown>FORMAT</unknown>'))->toBe('FORMAT');
   });
 });
