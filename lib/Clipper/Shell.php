@@ -21,9 +21,17 @@ class Shell
     $cols = 0;
     $lines = 0;
 
-    if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
+    if ('WIN' !== strtoupper(substr(PHP_OS, 0, 3))) {
       $cols = @exec('tput cols');
       $lines = @exec('tput lines');
+    } else {
+      @exec('mode', $output);
+
+      preg_match('/\s+Columns:\s*(\d+)/', $output, $columns);
+      preg_match('/\s+Lines:\s*(\d+)/', $output, $lines);
+
+      $cols = $columns[1];
+      $lines = $lines[1];
     }
 
     $this->width = max(getenv('COLUMNS'), $cols, $this->width);
