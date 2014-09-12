@@ -27,8 +27,8 @@ class Shell
     } else {
       @exec('mode', $output);
 
-      preg_match('/\s+Columns:\s*(\d+)/', $output, $columns);
-      preg_match('/\s+Lines:\s*(\d+)/', $output, $lines);
+      preg_match('/\s+Columns:\s*(\d+)/', join("\n", $output), $columns);
+      preg_match('/\s+Lines:\s*(\d+)/', join("\n", $output), $lines);
 
       $cols = $columns[1];
       $lines = $lines[1];
