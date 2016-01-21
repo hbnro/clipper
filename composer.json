@@ -4,7 +4,8 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Alvaro Cabrera"
+      "name": "Alvaro Cabrera",
+      "email": "pateketrueke@gmail.com"
     }
   ],
   "version": "v0.2.1",
@@ -19,5 +20,8 @@
     "psr-4": {
       "": "lib/"
     }
+  },
+  "config": {
+    "bin-dir": "bin"
   }
 }
