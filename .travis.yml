@@ -3,4 +3,4 @@ php:
   - 5.3
 script:
   - COMPOSER_ROOT_VERSION=dev-master composer update --prefer-dist
-  - vendor/bin/spectre specs/**
+  - bin/spectre specs/**
