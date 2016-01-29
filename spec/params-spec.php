@@ -175,7 +175,7 @@ describe('Parsing argvs:', function () {
         'filterGlobPattern' => array('', 'glob', null, 'Glob pattern to filter input', 'string'),
       ));
 
-      expect($params->usage())->toBe(join("\n", array(
+      expect($params->usage())->toBe(implode("\n", array(
         '-h, --help    Show this help',
         '-f, --file    inputFile  (required)',
         '-o, --output  outputFile  (required)',
