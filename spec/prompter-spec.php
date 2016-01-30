@@ -52,6 +52,19 @@ describe('Prompt helpers:', function () {
         expect($input)->toEqual('a');
         expect($context->value)->toEqual('foo [a/b/C]: ');
     });
+
+    it('should allow to pick values from a simple menu', function ($context, $prompter) {
+        $context->readln = '';
+        $input = $prompter->menu(array('a', 'b', 'c'));
+
+        expect($input)->toEqual(-1);
+        expect($context->value)->toEqual('
+  1. a
+  2. b
+  3. c
+
+Choose one: ');
+    });
 });
 
 class ContextSpec {
