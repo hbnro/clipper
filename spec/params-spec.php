@@ -46,6 +46,10 @@ describe('Parsing argvs:', function () {
 
     let('params', $params);
 
+    it('should expose its command', function ($params) {
+        expect($params->getCommand())->toEqual('vendor/bin/cmd');
+    });
+
     it('should parse nothing after --', function ($params) {
         expect($params->getTail())->toBe(array('-this', '--will', 'not get parsed'));
     });
@@ -166,7 +170,9 @@ describe('Parsing argvs:', function () {
             expect($params->getObject())->not->toHaveKey('no-force');
         });
 
-        it('should provide usage info', function ($params) {
+        it('should provide usage info', function () {
+            $params = new \Clipper\Params();
+
             $params->parse(array(
                 'README' => array('h', 'help', null, 'Show this help'),
                 'inputFile' => array('f', 'file', \Clipper\Params::PARAM_REQUIRED, null, 'string'),
@@ -182,6 +188,24 @@ describe('Parsing argvs:', function () {
                 '    --temp    tempDirectory',
                 '    --glob    Glob pattern to filter input',
             )));
+        });
+
+        it('should provide access as array', function () {
+            $params = new \Clipper\Params();
+
+            expect(count($params))->toEqual(0);
+            expect(isset($params[-1]))->toBeFalsy();
+            expect(isset($params->not_exists))->toBeFalsy();
+
+            expect(function () use ($params) {
+                $params[-1] = 'x';
+                $params->not_exists = 'x';
+
+                unset($params[-1]);
+                unset($params->not_exists);
+
+                foreach ($params as $param);
+            })->not->toThrow();
         });
     });
 });
