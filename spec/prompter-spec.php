@@ -13,12 +13,12 @@ describe('Prompt helpers:', function () {
 
     it('should wait for any key', function ($context, $prompter) {
         $prompter->wait();
-        expect($context->stdout)->toEqual("Press any key\n");
+        expect($context->__stdout)->toEqual("Press any key\n");
     });
 
     it('should wait until N seconds', function ($context, $prompter) {
         $prompter->wait(1);
-        expect($context->stdout)->toEqual("1s...0s...\n");
+        expect($context->__stdout)->toEqual("1s...0s...\n");
     });
 
     it('should prompt for any value', function ($context, $prompter) {
@@ -63,7 +63,7 @@ describe('Prompt helpers:', function () {
         $args = $readln();
 
         expect($input)->toEqual(-1);
-        expect($context->stdout)->toEqual('
+        expect($context->__stdout)->toEqual('
   1. a
   2. b
   3. c
@@ -76,7 +76,7 @@ describe('Prompt helpers:', function () {
         $context->width = 40;
         $prompter->wrap('Lorem ipsum dolor sit amet, consectetur-adipisicing-elit-sed-do-eiusmod');
 
-        expect($context->stdout)->toEqual('
+        expect($context->__stdout)->toEqual('
   Lorem ipsum dolor sit amet,
   consectetur-adipisicing-elit-sed-do-e
   iusmod
@@ -86,6 +86,6 @@ describe('Prompt helpers:', function () {
     it('.', function ($context, $prompter) {
         $context->width = 10;
         $prompter->progress(2, 5);
-        #expect($context->stdout)->toContain('x'); //, "<c:cyan,cyan>|</c><c:light_gray,light_gray>-</c>  41%");
+        #expect($context->__stdout)->toContain('x'); //, "<c:cyan,cyan>|</c><c:light_gray,light_gray>-</c>  41%");
     });
 });
