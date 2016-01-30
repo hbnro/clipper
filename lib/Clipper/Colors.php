@@ -31,44 +31,12 @@ class Colors
 
     public function __construct()
     {
-        // @codeCoverageIgnore
         $this->atty = (false !== getenv('ANSICON')) || (function_exists('posix_isatty') && @posix_isatty(STDOUT));
     }
 
     public function alias($name, $format)
     {
         $this->aliases[$name] = $format;
-    }
-
-    public function colorize($text, $format = null)
-    {
-        if (!$this->is_atty()) {
-            return $text;
-        }
-
-        if (!$format) {
-            $fg_color = array_rand($this->fgcolors);
-            $bg_color = array_rand($this->bgcolors);
-
-            $mode = array_rand(array(
-                'cu' => 0,
-                'cb' => 1,
-                'ch' => 2,
-                'c' => 3,
-            ));
-
-            $suffix = (rand(0, 1) % 2) ? '' : ",$bg_color";
-            $format = "$mode:$fg_color$suffix";
-        }
-
-        $lines = explode("\n", $text);
-        $parts = explode(':', $format);
-
-        foreach ($lines as $i => $line) {
-            $lines[$i] = $this->format("<$format>$line</$parts[0]>");
-        }
-
-        return implode("\n", $lines);
     }
 
     public function format($text)
