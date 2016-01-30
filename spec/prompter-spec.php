@@ -82,8 +82,9 @@ class ContextSpec {
 
     public function __set($method, $value) {
         if (!($value instanceof \Closure)) {
-            $this->methods[$method] = function () use ($value) {
-                $this->value .= implode('', func_get_args());
+            $_write = array($this, '_write');
+            $this->methods[$method] = function () use ($_write, $value) {
+                call_user_func_array($_write, func_get_args());
                 return $value;
             };
         } else {
