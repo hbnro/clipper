@@ -9,21 +9,21 @@ class Colors
     private $aliases = array();
 
     private $bgcolors = array(
-                      'black' => 40, 'red' => 41,
-                      'green' => 42, 'yellow' => 43,
-                      'blue' => 44, 'magenta' => 45,
-                      'cyan' => 46, 'light_gray' => 47,
-                    );
+        'black' => 40, 'red' => 41,
+        'green' => 42, 'yellow' => 43,
+        'blue' => 44, 'magenta' => 45,
+        'cyan' => 46, 'light_gray' => 47,
+    );
 
     private $fgcolors = array(
-                      'black' => 30, 'red' => 31, 'green' => 32,
-                      'brown' => 33, 'blue' => 34, 'purple' => 35,
-                      'cyan' => 36, 'light_gray' => 37,
-                      'dark_gray' => '1;30', 'light_red' => '1;31',
-                      'light_green' => '1;32', 'yellow' => '1;33',
-                      'light_blue' => '1;34', 'light_purple' => '1;35',
-                      'light_cyan' => '1;36', 'white' => '1;37',
-                    );
+        'black' => 30, 'red' => 31, 'green' => 32,
+        'brown' => 33, 'blue' => 34, 'purple' => 35,
+        'cyan' => 36, 'light_gray' => 37,
+        'dark_gray' => '1;30', 'light_red' => '1;31',
+        'light_green' => '1;32', 'yellow' => '1;33',
+        'light_blue' => '1;34', 'light_purple' => '1;35',
+        'light_cyan' => '1;36', 'white' => '1;37',
+    );
 
     private $fmt_regex = '/<([cubh]{1,3}):([^<>]+)>(\s*)(.+?)(\s*)<\/\\1>/s';
     private $strip_regex = "/<[cubh]:[^<>]+>|\033\[[\d;]*m|<\/[cubh]>/s";
@@ -31,6 +31,7 @@ class Colors
 
     public function __construct()
     {
+        // @codeCoverageIgnore
         $this->atty = (false !== getenv('ANSICON')) || (function_exists('posix_isatty') && @posix_isatty(STDOUT));
     }
 
@@ -50,11 +51,11 @@ class Colors
             $bg_color = array_rand($this->bgcolors);
 
             $mode = array_rand(array(
-        'cu' => 0,
-        'cb' => 1,
-        'ch' => 2,
-        'c' => 3,
-      ));
+                'cu' => 0,
+                'cb' => 1,
+                'ch' => 2,
+                'c' => 3,
+            ));
 
             $suffix = (rand(0, 1) % 2) ? '' : ",$bg_color";
             $format = "$mode:$fg_color$suffix";
@@ -79,15 +80,15 @@ class Colors
         $aliases = $this->aliases;
 
         $text = preg_replace_callback($this->aliases_regex, function ($matches) use ($aliases) {
-      if (!empty($aliases[$matches[1]])) {
-          $format = $aliases[$matches[1]];
-          $parts = explode(':', $format);
+            if (!empty($aliases[$matches[1]])) {
+                $format = $aliases[$matches[1]];
+                $parts = explode(':', $format);
 
-          return "<$format>$matches[2]</$parts[0]>";
-      }
+                return "<$format>$matches[2]</$parts[0]>";
+            }
 
-      return $matches[2];
-    }, $text);
+            return $matches[2];
+        }, $text);
 
         while (preg_match_all($this->fmt_regex, $text, $match)) {
             foreach ($match[0] as $i => $val) {
