@@ -59,8 +59,8 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         $out = array();
         $max = array_map(function ($param) {
-      return strlen($param[0]) + strlen($param[1]);
-    }, $this->params);
+            return strlen($param[0]) + strlen($param[1]);
+        }, $this->params);
 
         sort($max);
 
@@ -100,8 +100,8 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
             if ($left['key']) {
                 if ((self::PARAM_MULTIPLE & $left['opts']) && !isset($this->flags[$left['key']])) {
                     $this->flags[$left['key']] = array_merge($left, array(
-            'value' => array(),
-          ));
+                        'value' => array(),
+                    ));
                 }
 
                 if (null !== $left['value']) {
@@ -148,24 +148,24 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
                 if ($exists) {
                     switch ($type) {
-            case 'boolean';
-              if (!is_bool($value)) {
-                  throw new \Exception($debug_msg);
-              }
-            break;
+                        case 'boolean';
+                            if (!is_bool($value)) {
+                                throw new \Exception($debug_msg);
+                            }
+                        break;
 
-            case 'number';
-              if (!is_integer($value)) {
-                  throw new \Exception($debug_msg);
-              }
-            break;
+                        case 'number';
+                            if (!is_integer($value)) {
+                                throw new \Exception($debug_msg);
+                            }
+                        break;
 
-            case 'array';
-              if (!is_array($value)) {
-                  throw new \Exception($debug_msg);
-              }
-            break;
-          }
+                        case 'array';
+                            if (!is_array($value)) {
+                                throw new \Exception($debug_msg);
+                            }
+                        break;
+                    }
                 } elseif (self::PARAM_REQUIRED & $opts) {
                     throw new \Exception("Missing required parameter '$key'");
                 }
@@ -244,11 +244,11 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         return array_merge($params, array(
-      'key' => $name,
-      'type' => !empty($param[4]) ? $param[4] : null,
-      'opts' => !empty($param[2]) ? $param[2] : null,
-      'usage' => !empty($param[3]) ? $param[3] : null,
-    ));
+            'key' => $name,
+            'type' => !empty($param[4]) ? $param[4] : null,
+            'opts' => !empty($param[2]) ? $param[2] : null,
+            'usage' => !empty($param[3]) ? $param[3] : null,
+        ));
     }
 
     private function parts($arg)
@@ -265,10 +265,10 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         return $this->prop(array(
-      'long' => $long_flag,
-      'short' => $short_flag,
-      'value' => $inline_value,
-    ));
+            'long' => $long_flag,
+            'short' => $short_flag,
+            'value' => $inline_value,
+        ));
     }
 
     public function count()
