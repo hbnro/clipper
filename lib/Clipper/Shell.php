@@ -54,16 +54,19 @@ class Shell
         $this->loop = 0;
     }
 
-    public function wait($text = 'Press any key')
+    public function wait($text = 'Press any key', $format = '%ds...')
     {
         if (is_numeric($text)) {
             while (1) {
+                if ($format) {
+                    $nth = sprintf($format, $text);
+                    $this->clear(strlen($nth));
+                    $this->write($nth . (!$text ? "\n" : ''));
+                }
+
                 if (($text -= 1) < 0) {
                     break;
                 }
-
-                $this->write($len = strlen("$text..."));
-                $this->clear($len);
 
                 sleep(1);
             }
@@ -149,7 +152,7 @@ class Shell
 
     public function choice($text, $value = 'yn', $default = 'n')
     {
-        $value = strtolower(str_replace($default, '', $value)).strtoupper($default);
+        $value = str_replace($default, strtoupper($default), strtolower($value));
         $value = str_replace('\\', '/', trim(addcslashes($value, $value), '\\'));
 
         $out = $this->readln(sprintf('%s [%s]: ', $text, $value)) ?: $default;
@@ -157,14 +160,14 @@ class Shell
         return ($out && strstr($value, strtolower($out))) ? $out : $default;
     }
 
-    public function menu(array $set, $default = '', $title = 'Choose one', $warn = 'Unknown option')
+    public function menu(array $set, $default = -1, $title = 'Choose one', $warn = 'Unknown option')
     {
         $out = "\n";
         $old = array_values($set);
         $pad = strlen(sizeof($set)) + 2;
 
         foreach ($old as $i => $val) {
-            $test = array_search($val, $set) == $default ? ' [*]' : '';
+            $test = array_search($val, $set) === $default ? ' [*]' : '';
 
             $out .= implode('', array(str_pad($i + 1, $pad, ' ', STR_PAD_LEFT), '. ', $val, $test, "\n"));
         }
