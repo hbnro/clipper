@@ -68,7 +68,7 @@ class Shell
 
     public function sprintf($text)
     {
-        return vsprintf($this->format($text), array_slice(func_get_args(), 1));
+        return $this->format(func_get_args() > 2 ? vsprintf($text, array_slice(func_get_args(), 1)) : $text);
     }
 
     public function printf($text)
