@@ -31,4 +31,8 @@ describe('Parsing colors:', function () {
         expect($colors->format('<warning>ERROR</warning>'))->toHasFormat('1;33;41');
         expect($colors->format('<unknown>FORMAT</unknown>'))->toBe('FORMAT');
     });
+
+    it('should strip format', function ($colors) {
+        expect($colors->strips($colors->format('<c:cyan>cyan</c>')))->toEqual('cyan');
+    });
 });
