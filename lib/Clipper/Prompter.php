@@ -95,7 +95,6 @@ class Prompter
         foreach ($test as $i => $str) {
             if (strlen($str) > $max) {
                 $cur && $out [] = $cur;
-
                 $out [] = wordwrap($str, $max + 2, "\n$left", true);
                 $cur = '';
             } else {
@@ -113,7 +112,7 @@ class Prompter
 
         $test = implode("\n$left", $out);
 
-        $this->cli->writeln("\n", "$left$test");
+        $this->cli->writeln("\n", implode("\n", array_map('rtrim', explode("\n", "$left$test"))));
     }
 
     public function progress($current, $total = 100, $title = '')
