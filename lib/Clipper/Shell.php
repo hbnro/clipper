@@ -94,7 +94,10 @@ class Shell
         $args = func_get_args();
         $args [] = "\n";
 
-        return $this->write(implode('', $args))->flush();
+        $this->write(implode('', $args));
+        $this->flush();
+
+        return $this;
     }
 
     public function write($text)
@@ -108,7 +111,9 @@ class Shell
     {
         fwrite(STDERR, $this->format("$text\n"));
 
-        return $this->flush();
+        $this->flush();
+
+        return $this;
     }
 
     public function clear($num = 0)
@@ -137,7 +142,5 @@ class Shell
         ob_get_level() && ob_flush();
 
         flush();
-
-        return $this;
     }
 }
