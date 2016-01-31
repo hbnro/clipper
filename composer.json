@@ -10,10 +10,10 @@
   ],
   "version": "v0.2.2",
   "require": {
-    "php": ">=5.3.4"
+    "php": ">=5.3.4",
+    "habanero/spectre": "^0.2.7"
   },
   "require-dev": {
-    "habanero/spectre": "~0.2.5"
   },
   "minimum-stability": "dev",
   "autoload": {
