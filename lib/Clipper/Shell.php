@@ -41,7 +41,8 @@ class Shell
         $this->height = max(getenv('ROWS'), $lines, $this->height);
     }
 
-    public function __call($method, $arguments) {
+    public function __call($method, $arguments)
+    {
         return call_user_func_array(array($this->prompter, $method), $arguments);
     }
 

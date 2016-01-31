@@ -6,7 +6,8 @@ class Prompter
 {
     private $cli;
 
-    public function __construct($instance) {
+    public function __construct($instance)
+    {
         $this->cli = $instance;
     }
 
@@ -17,7 +18,7 @@ class Prompter
                 if ($format) {
                     $nth = sprintf($format, $text);
                     $this->cli->clear(strlen($nth));
-                    $this->cli->write($nth . (!$text ? "\n" : ''));
+                    $this->cli->write($nth.(!$text ? "\n" : ''));
                 }
 
                 if (($text -= 1) < 0) {
