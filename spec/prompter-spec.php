@@ -100,5 +100,10 @@ describe('Prompt helpers:', function () {
         expect($stdout())->toEqual("\n  Lorem ipsum dolor sit amet,\n  consectetur-adipisicing-elit-sed-do-e\n  iusmod\n");
     });
 
-    // TODO: progress
+    it('should display a progress bar', function ($shell, $stdout, $prompt) {
+        $shell->width = 40;
+        $prompt->progress(3, 10);
+
+        expect($shell->colors->strips($stdout()))->toEqual("\r||||||||||-----------------------  31%");
+    });
 });
