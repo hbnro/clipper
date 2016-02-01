@@ -143,5 +143,7 @@ class Shell
         ob_get_level() && ob_flush();
 
         flush();
+
+        return $this;
     }
 }

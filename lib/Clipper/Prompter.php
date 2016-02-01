@@ -17,8 +17,9 @@ class Prompter
             while (1) {
                 if ($format) {
                     $nth = sprintf($format, $text);
-                    $this->cli->clear(strlen($nth));
-                    $this->cli->write($nth.(!$text ? "\n" : ''));
+                    $this->cli
+                        ->clear(strlen($nth))
+                        ->write($nth.(!$text ? "\n" : ''));
                 }
 
                 if (($text -= 1) < 0) {
@@ -28,8 +29,9 @@ class Prompter
                 sleep(1);
             }
         } else {
-            $this->cli->writeln($text);
-            $this->cli->readln();
+            $this->cli
+                ->writeln($text)
+                ->readln();
         }
     }
 
