@@ -1,4 +1,8 @@
+sudo: false
 language: php
+cache:
+  directories:
+  - $PWD/vendor
 php:
   - 5.3
   - 5.4
@@ -6,6 +10,9 @@ php:
   - 5.6
   - 7
   - hhvm
-script:
+install:
   - COMPOSER_ROOT_VERSION=dev-master composer update --prefer-dist
-  - bin/spectre spec/**
+script:
+  - bin/spectre spec
+notifications:
+  email: false
