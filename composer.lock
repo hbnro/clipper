@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b6c736f3f62f0780fd9d671b7588084b",
-    "content-hash": "364058d78b9af39685459a0f8cd8df1f",
+    "hash": "17a48a3a59c1f78fbc629ce639ceef6f",
+    "content-hash": "cb06736f01da5c9a5652136bdb707fda",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -63,22 +63,23 @@
         },
         {
             "name": "habanero/spectre",
-            "version": "v0.2.7",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hbnro/spectre.git",
-                "reference": "f8043a1c98aa1aa82c72543c5f075f9522ac13fd"
+                "reference": "21beddadffcd5fe82dcd58a3e83a10e987e53ffa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hbnro/spectre/zipball/f8043a1c98aa1aa82c72543c5f075f9522ac13fd",
-                "reference": "f8043a1c98aa1aa82c72543c5f075f9522ac13fd",
+                "url": "https://api.github.com/repos/hbnro/spectre/zipball/21beddadffcd5fe82dcd58a3e83a10e987e53ffa",
+                "reference": "21beddadffcd5fe82dcd58a3e83a10e987e53ffa",
                 "shasum": ""
             },
             "require": {
                 "habanero/clipper": "~0.2.1",
                 "php": ">=5.3.4",
                 "phpunit/php-code-coverage": "~2.0.10",
+                "phpunit/php-text-template": "^1.2",
                 "phpunit/phpunit-mock-objects": "^2.3"
             },
             "bin": [
@@ -105,7 +106,7 @@
                 }
             ],
             "description": "Simple spec-testing tools",
-            "time": "2016-01-31 08:06:20"
+            "time": "2016-02-01 22:10:58"
         },
         {
             "name": "phpunit/php-code-coverage",
