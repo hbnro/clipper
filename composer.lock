@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd81924c57c810946b76d31006be2556",
+    "content-hash": "34eec14ec5f5e87e4596a5459d0f54d1",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -77,16 +77,16 @@
         },
         {
             "name": "habanero/spectre",
-            "version": "v0.3.2",
+            "version": "v0.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hbnro/spectre.git",
-                "reference": "1252d676a44ffecc535aec233cab9025dd781fd4"
+                "reference": "03e93208448114e7775f32b220f1eaa05ddf5e19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hbnro/spectre/zipball/1252d676a44ffecc535aec233cab9025dd781fd4",
-                "reference": "1252d676a44ffecc535aec233cab9025dd781fd4",
+                "url": "https://api.github.com/repos/hbnro/spectre/zipball/03e93208448114e7775f32b220f1eaa05ddf5e19",
+                "reference": "03e93208448114e7775f32b220f1eaa05ddf5e19",
                 "shasum": ""
             },
             "require": {
@@ -122,9 +122,9 @@
             "description": "Simple spec-testing tools",
             "support": {
                 "issues": "https://github.com/hbnro/spectre/issues",
-                "source": "https://github.com/hbnro/spectre/tree/v0.3.2"
+                "source": "https://github.com/hbnro/spectre/tree/v0.3.3"
             },
-            "time": "2021-09-30T06:12:13+00:00"
+            "time": "2021-09-30T16:42:33+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
