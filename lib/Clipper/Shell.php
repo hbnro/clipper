@@ -28,9 +28,9 @@ class Shell
             $TERM_SIZE = getenv('TERM_SIZE');
 
             if ($this->colors->is_atty()) {
-                [$a, $b] = explode(' ', $TERM_SIZE ?: '');
-                $cols = $a ?: @exec('tput cols');
-                $lines = $b ?: @exec('tput lines');
+                $parts = @explode(' ', $TERM_SIZE ?: '');
+                $cols = !empty($parts[0]) ?: @exec('tput cols');
+                $lines = !empty($parts[1]) ?: @exec('tput lines');
             }
 
         } else {
