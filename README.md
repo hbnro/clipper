@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.org/hbnro/clipper.png)](https://travis-ci.org/hbnro/clipper)
+[![CI](https://github.com/hbnro/clipper/actions/workflows/ci.yml/badge.svg)](https://github.com/hbnro/clipper/actions)
