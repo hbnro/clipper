@@ -21,12 +21,15 @@ class Shell
         $this->params = new Params($argv);
         $this->colors = new Colors();
 
-        $cols = 0;
-        $lines = 0;
+        $cols = 80;
+        $lines = 20;
 
         if ('WIN' !== strtoupper(substr(PHP_OS, 0, 3))) {
-            $cols = @exec('tput cols');
-            $lines = @exec('tput lines');
+            if ($this->colors->is_atty()) {
+                $cols = @exec('tput cols');
+                $lines = @exec('tput lines');
+            }
+
         } else {
             @exec('mode', $output);
 
