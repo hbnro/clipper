@@ -273,7 +273,7 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function count()
     {
-        return sizeof($this->_);
+        return $this->_ ? sizeof($this->_) : 0;
     }
 
     public function getIterator()

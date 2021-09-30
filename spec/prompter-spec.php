@@ -39,7 +39,7 @@ describe('Prompt helpers:', function () {
     });
 
     it('should wait until N seconds', function ($stdout, $prompt) {
-        fn('Clipper', 'sleep')
+        fun('Clipper', 'sleep')
             ->expects(exactly(3));
 
         $prompt->wait(3);
