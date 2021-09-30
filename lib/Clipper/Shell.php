@@ -68,6 +68,30 @@ class Shell
         $this->loop = 0;
     }
 
+    public function wait($text = 'Press ENTER to continue')
+    {
+        if (is_numeric($text)) {
+            $length = strlen($text) + 3;
+            while (1) {
+                if ($text <= 0) {
+                    break;
+                }
+
+                $this->clear(-$length)
+                    ->write("$text...");
+                $text -= 1;
+                sleep(1);
+            }
+            $this->clear(-$length);
+        } else {
+            $this->save()
+                ->writeln($text)
+                ->readln();
+            $this->back()
+                ->clear();
+        }
+    }
+
     public function format($text, $strips = false)
     {
         return $strips ? $this->colors->strips($text) : $this->colors->format($text);
@@ -123,18 +147,27 @@ class Shell
         return $this;
     }
 
-    public function clear($num = 0)
+    public function clear($nth = null)
     {
-        if ($num > 0) {
-            $this->write(str_repeat("\x08", $num));
-        } elseif ($this->colors->is_atty()) {
-            $this->write("\033[H\033[2J");
-        } else {
-            $c = $this->height;
+        if ($nth < 0) {
+            $chars = abs($nth);
+            $this->write("\033[${chars}D\033[K");
+        } else if ($nth === true) {
+            if ($this->colors->is_atty()) {
+                $this->write("\033[H\033[2J");
+            } else {
+                $c = $this->height;
 
-            while ($c -= 1) {
-                $this->writeln();
+                while ($c -= 1) {
+                    $this->writeln();
+                }
             }
+        } else if ($nth > 0) {
+            while ($nth -= 1) {
+                $this->write("\033[1A\033[K");
+            }
+        } else {
+            $this->write("\033[K");
         }
 
         return $this;
@@ -151,5 +184,15 @@ class Shell
         flush();
 
         return $this;
+    }
+
+    public function save()
+    {
+        return $this->write("\033[s");
+    }
+
+    public function back()
+    {
+        return $this->write("\033[u");
     }
 }

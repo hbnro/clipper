@@ -11,30 +11,6 @@ class Prompter
         $this->cli = $instance;
     }
 
-    public function wait($text = 'Press any key', $format = '%ds...')
-    {
-        if (is_numeric($text)) {
-            while (1) {
-                if ($format) {
-                    $nth = sprintf($format, $text);
-                    $this->cli
-                        ->clear(strlen($nth))
-                        ->write($nth.(!$text ? "\n" : ''));
-                }
-
-                if (($text -= 1) < 0) {
-                    break;
-                }
-
-                sleep(1);
-            }
-        } else {
-            $this->cli
-                ->writeln($text)
-                ->readln();
-        }
-    }
-
     public function prompt($text, $default = '')
     {
         $default && $text .= " [$default]";
@@ -137,5 +113,79 @@ class Prompter
 
             $this->cli->write(sprintf('%s %3d%%%s', $line, $perc, $finish ? "\n" : ''));
         }
+    }
+
+    public function table(array $set, array $heads = array())
+    {
+      // TODO: make it work on large amount of data?
+      $set  = array_values($set);
+      $max  = $this->cli->width / sizeof($set[0]);
+      //$max -= sizeof($set[0]);
+
+      $head =
+      $sep  =
+      $col  = array();
+
+      foreach ($set as $test) {// columns
+        $key = 0;
+
+        foreach (array_values($test) as $one) {
+          $old = isset($col[$key]) ? $col[$key] : strlen($key);
+
+          if ( ! isset($col[$key])) {
+            $col[$key] = strlen($key);
+          }
+
+          if (strlen($one) > $old) {
+            $num = strlen($one);
+            $col[$key] = $num < $max ? $num : $max;
+          }
+          $key += 1;
+        }
+      }
+
+      reset($set);
+
+      $out = array();
+
+      foreach (array_values($heads) as $key => $one) {
+        $head []= str_pad($one, $col[$key], ' ', STR_PAD_RIGHT);
+        $head []= ' ';
+
+        if (strlen($one) > $col[$key]) {
+          $col[$key] = strlen($one);
+        }
+      }
+
+      $glue   = '';
+
+      $this->cli->writeln();
+
+      if ( ! empty($heads)) {
+        $heads = join('', $head);
+        $heads = preg_replace('/\b\w+\b/', '\cpurple(\\0)\c', $heads);
+
+        $this->cli->write($this->cli->format(" $heads"));
+        $this->cli->writeln();
+      }
+
+      foreach ($set as $test) { // data
+        $key = 0;
+        $row = array('');
+
+        foreach ($test as $one) {
+          $one   = substr($one, 0, strlen($one) > $max ? $max - 3 : $max) . (strlen($one) > $max ? '...' : '');
+          $one   = str_pad($one, $col[$key], ' ', is_numeric($one) ? STR_PAD_LEFT : STR_PAD_RIGHT);
+          $row []= preg_replace('/[\r\n\t]/', ' ', $one);
+          $key  += 1;
+        }
+
+        $row []= '';
+        $out []= ' ' . trim(join(' ', $row));
+      }
+
+      $this->cli->write("\n" . join("\n", $out));
+      $this->cli->write("\n\n");
+      $this->cli->flush();
     }
 }
