@@ -22,12 +22,15 @@ class Shell
         $this->colors = new Colors();
 
         $cols = 80;
-        $lines = 20;
+        $lines = 25;
 
         if ('WIN' !== strtoupper(substr(PHP_OS, 0, 3))) {
+            $TERM_SIZE = getenv('TERM_SIZE');
+
             if ($this->colors->is_atty()) {
-                $cols = @exec('tput cols');
-                $lines = @exec('tput lines');
+                [$a, $b] = explode(' ', $TERM_SIZE ?: '');
+                $cols = $a ?: @exec('tput cols');
+                $lines = $b ?: @exec('tput lines');
             }
 
         } else {
