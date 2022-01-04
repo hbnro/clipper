@@ -35,7 +35,7 @@ describe('Prompt helpers:', function () {
 
     it('should wait for any key', function ($stdout, $prompt) {
         $prompt->wait();
-        expect($stdout())->toEqual("Press any key\n");
+        expect($stdout())->toContain('Press ENTER to continue');
     });
 
     it('should wait until N seconds', function ($stdout, $prompt) {
@@ -44,7 +44,7 @@ describe('Prompt helpers:', function () {
 
         $prompt->wait(3);
 
-        expect($stdout())->toEqual("3s...2s...1s...0s...\n");
+        expect($stdout())->toEqual('3...2...1...');
     });
 
     it('should prompt for any wanted value', function ($readln, $prompt) {

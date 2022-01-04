@@ -11,6 +11,10 @@ class Prompter
         $this->cli = $instance;
     }
 
+    public function __call($method, $args) {
+        return call_user_func_array([$this->cli, $method], $args);
+    }
+
     public function prompt($text, $default = '')
     {
         $default && $text .= " [$default]";

@@ -253,13 +253,13 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
 
     private function parts($arg)
     {
-        preg_match('/^(?:--([-\w]+)(?:=(\S+))?|-(\w)(.+?|)|(.+?))$/', $arg, $matches);
+        preg_match('/^(?:--([-\w]+)(?:=(\S+))?|-(\w)(.+?|)|(.+?))$/', $arg ?: '', $matches);
 
         $long_flag = !empty($matches[1]) ? $matches[1] : null;
         $short_flag = !empty($matches[3]) ? $matches[3] : null;
         $inline_value = !empty($matches[4]) ? $matches[4] : (!empty($matches[2]) ? $matches[2] : (!empty($matches[5]) ? $matches[5] : null));
 
-        if ('no-' === substr($long_flag, 0, 3)) {
+        if ($long_flag !== null && 'no-' === substr($long_flag, 0, 3)) {
             $long_flag = substr($long_flag, 3);
             $inline_value = false;
         }
@@ -271,32 +271,32 @@ class Params implements \Countable, \ArrayAccess, \IteratorAggregate
         ));
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->_ ? sizeof($this->_) : 0;
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->_);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->_[$offset] = $value;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->_[$offset]);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->_[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->_[$offset];
     }
