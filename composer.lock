@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c66739e901710ae8afecdc1ca6902762",
+    "content-hash": "456d3f4287d242961fac98ba16a96bdb",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -12,25 +12,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "6410c4b8352cb64218641457cef64997e6b784fb"
+                "reference": "0a0fa9780f5d4e507415a065172d26a98d02047b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/6410c4b8352cb64218641457cef64997e6b784fb",
-                "reference": "6410c4b8352cb64218641457cef64997e6b784fb",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/0a0fa9780f5d4e507415a065172d26a98d02047b",
+                "reference": "0a0fa9780f5d4e507415a065172d26a98d02047b",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^8.0",
+                "doctrine/coding-standard": "^9 || ^11",
                 "ext-pdo": "*",
                 "ext-phar": "*",
-                "phpbench/phpbench": "^0.13 || 1.0.0-alpha2",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
+                "phpbench/phpbench": "^0.16 || ^1",
+                "phpstan/phpstan": "^1.4",
+                "phpstan/phpstan-phpunit": "^1",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "vimeo/psalm": "^4.30 || ^5.4"
             },
             "type": "library",
             "autoload": {
@@ -57,7 +58,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/1.4.x"
+                "source": "https://github.com/doctrine/instantiator/tree/1.5.0"
             },
             "funding": [
                 {
@@ -73,24 +74,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-10T19:05:51+00:00"
+            "time": "2022-12-30T00:15:36+00:00"
         },
         {
             "name": "habanero/spectre",
-            "version": "v0.3.3",
+            "version": "v0.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hbnro/spectre.git",
-                "reference": "03e93208448114e7775f32b220f1eaa05ddf5e19"
+                "reference": "767d02a4272fbc37430f699bbfb56617ce7f5d59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hbnro/spectre/zipball/03e93208448114e7775f32b220f1eaa05ddf5e19",
-                "reference": "03e93208448114e7775f32b220f1eaa05ddf5e19",
+                "url": "https://api.github.com/repos/hbnro/spectre/zipball/767d02a4272fbc37430f699bbfb56617ce7f5d59",
+                "reference": "767d02a4272fbc37430f699bbfb56617ce7f5d59",
                 "shasum": ""
             },
             "require": {
-                "habanero/clipper": "~0.2.1",
+                "habanero/clipper": "^0.2.6",
                 "php": ">=5.3.4",
                 "phpunit/php-code-coverage": "~2.0.10",
                 "phpunit/php-text-template": "^1.2",
@@ -101,13 +102,13 @@
             ],
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Spectre\\": "lib/Spectre",
-                    "": "inc/support"
-                },
                 "files": [
                     "inc/helpers.php"
-                ]
+                ],
+                "psr-4": {
+                    "": "inc/support",
+                    "Spectre\\": "lib/Spectre"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -122,9 +123,9 @@
             "description": "Simple spec-testing tools",
             "support": {
                 "issues": "https://github.com/hbnro/spectre/issues",
-                "source": "https://github.com/hbnro/spectre/tree/v0.3.3"
+                "source": "https://github.com/hbnro/spectre/tree/v0.3.6"
             },
-            "time": "2021-09-30T16:42:33+00:00"
+            "time": "2023-08-23T08:27:24+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -638,5 +639,5 @@
         "php": ">=5.3.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
