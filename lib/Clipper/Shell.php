@@ -151,7 +151,7 @@ class Shell
     {
         if ($nth < 0) {
             $chars = abs($nth);
-            $this->write("\033[${chars}D\033[K");
+            $this->write("\033[{$chars}D\033[K");
         } else if ($nth === true) {
             if ($this->colors->is_atty()) {
                 $this->write("\033[H\033[2J");
